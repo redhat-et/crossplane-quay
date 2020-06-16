@@ -2,7 +2,7 @@
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: InfrastructureDefinition
 metadata:
-  name: redisclusters.cache.example.org
+  name: redisinstances.cache.example.org
 spec:
   connectionSecretKeys:
     - endpoint
@@ -11,10 +11,10 @@ spec:
     group: cache.example.org
     version: v1alpha1
     names:
-      kind: RedisCluster
-      listKind: RedisClusterList
-      plural: redisclusters
-      singular: rediscluster
+      kind: RedisInstance
+      listKind: RedisInstanceList
+      plural: redisinstances
+      singular: redisinstance
     validation:
       openAPIV3Schema:
         type: object

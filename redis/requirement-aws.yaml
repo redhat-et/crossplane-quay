@@ -1,5 +1,5 @@
 apiVersion: cache.example.org/v1alpha1
-kind: RedisClusterRequirement
+kind: RedisInstanceRequirement
 metadata:
   name: my-redis
   namespace: default

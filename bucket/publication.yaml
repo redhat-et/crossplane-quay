@@ -2,7 +2,7 @@
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: InfrastructurePublication
 metadata:
-  name: redisclusters.cache.example.org
+  name: buckets.storage.example.org
 spec:
   infrastructureDefinitionRef:
-    name: redisclusters.cache.example.org
+    name: buckets.storage.example.org

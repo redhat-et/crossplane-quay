@@ -2,19 +2,20 @@
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: InfrastructureDefinition
 metadata:
-  name: redisclusters.cache.example.org
+  name: buckets.storage.example.org
 spec:
   connectionSecretKeys:
+    - username
+    - password
     - endpoint
-    - port
   crdSpecTemplate:
-    group: cache.example.org
+    group: storage.example.org
     version: v1alpha1
     names:
-      kind: RedisCluster
-      listKind: RedisClusterList
-      plural: redisclusters
-      singular: rediscluster
+      kind: Bucket
+      listKind: BucketList
+      plural: buckets
+      singular: bucket
     validation:
       openAPIV3Schema:
         type: object

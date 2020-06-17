@@ -1,0 +1,41 @@
+---
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: Composition
+metadata:
+  name: buckets.aws.storage.example.org
+  labels:
+    provider: aws
+    guide: quickstart
+    vpc: default
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  reclaimPolicy: Delete
+  from:
+    apiVersion: storage.example.org/v1alpha1
+    kind: Bucket
+  to:
+    - base:
+        apiVersion: storage.aws.crossplane.io/v1alpha3
+        kind: S3Bucket
+        spec:
+          forProvider:
+            localPermission: ReadWrite
+            region: us-east-1
+            cannedACL: private
+          writeConnectionSecretToRef:
+            name: bucketsecret
+            namespace: crossplane-system
+          providerRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+      patches:
+        - fromFieldPath: "metadata.uid"
+          toFieldPath: "spec.writeConnectionSecretToRef.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-bucket"
+      connectionDetails:
+        - fromConnectionSecretKey: username
+        - fromConnectionSecretKey: password
+        - fromConnectionSecretKey: endpoint

@@ -1,16 +1,16 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: redisclusters.cache.example.org
+  name: buckets.storage.example.org
   labels:
     rbac.crossplane.io/aggregate-to-crossplane: "true"
 rules:
 - apiGroups:
-  - cache.example.org
+  - storage.example.org
   resources:
-  - redisclusters
-  - redisclusters/status
-  - redisclusterrequirements
-  - redisclusterrequirements/status
+  - buckets
+  - buckets/status
+  - bucketrequirements
+  - bucketrequirements/status
   verbs:
   - "*"

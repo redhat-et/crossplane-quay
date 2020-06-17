@@ -1,12 +1,12 @@
-apiVersion: cache.example.org/v1alpha1
-kind: RedisClusterRequirement
+apiVersion: storage.example.org/v1alpha1
+kind: BucketRequirement
 metadata:
-  name: my-redis
+  name: my-bucket
   namespace: default
 spec:
   compositionSelector:
     matchLabels:
       provider: aws
-      vpc: new
+      vpc: default
   writeConnectionSecretToRef:
-    name: redis-conn
+    name: bucket-conn

@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: Composition
 metadata:
-  name: vpcredisinstances.aws.cache.example.org
+  name: vpcredisclusters.aws.cache.example.org
   labels:
     provider: aws
     guide: quickstart
@@ -11,7 +11,7 @@ spec:
   reclaimPolicy: Delete
   from:
     apiVersion: cache.example.org/v1alpha1
-    kind: RedisInstance
+    kind: RedisCluster
   to:
     - base:
         apiVersion: network.aws.crossplane.io/v1alpha3

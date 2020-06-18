@@ -1,4 +1,5 @@
 #!/bin/bash
+kind create cluster
 kubectl create namespace crossplane-system
 
 helm repo add crossplane-alpha https://charts.crossplane.io/alpha
@@ -6,12 +7,14 @@ helm repo add crossplane-alpha https://charts.crossplane.io/alpha
 # Kubernetes 1.15 and newer versions
 helm install crossplane --namespace crossplane-system crossplane-alpha/crossplane
 
-sleep 15
+sleep 10
 
 PACKAGE=crossplane/provider-aws:v0.10.0
 NAME=provider-aws
 
 kubectl crossplane package install --cluster --namespace crossplane-system ${PACKAGE} ${NAME}
+
+sleep 10
 
 AWS_PROFILE=default && echo -e "[default]\naws_access_key_id = $(aws configure get aws_access_key_id --profile $AWS_PROFILE)\naws_secret_access_key = $(aws configure get aws_secret_access_key --profile $AWS_PROFILE)" > creds.conf
     

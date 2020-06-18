@@ -1,12 +1,13 @@
 apiVersion: storage.example.org/v1alpha1
 kind: BucketRequirement
 metadata:
-  name: my-bucket
+  name: s3bucket-test-quay.krish.redhat.com
   namespace: default
 spec:
+  parameters:
+    name: s3bucket-test-quay.krish.redhat.com
   compositionSelector:
     matchLabels:
       provider: aws
-      vpc: default
   writeConnectionSecretToRef:
     name: bucket-conn

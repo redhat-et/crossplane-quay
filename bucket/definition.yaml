@@ -22,3 +22,13 @@ spec:
         properties:
           spec:
             type: object
+            properties:
+              parameters:
+                type: object
+                properties:
+                  name:
+                    type: string
+                required:
+                  - name
+            required:
+              - parameters

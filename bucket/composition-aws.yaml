@@ -6,7 +6,6 @@ metadata:
   labels:
     provider: aws
     guide: quickstart
-    vpc: default
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   reclaimPolicy: Delete
@@ -18,10 +17,9 @@ spec:
         apiVersion: storage.aws.crossplane.io/v1alpha3
         kind: S3Bucket
         spec:
-          forProvider:
-            localPermission: ReadWrite
-            region: us-east-1
-            cannedACL: private
+          localPermission: ReadWrite
+          region: us-east-1
+          cannedACL: private
           writeConnectionSecretToRef:
             name: bucketsecret
             namespace: crossplane-system
@@ -35,6 +33,8 @@ spec:
             - type: string
               string:
                 fmt: "%s-bucket"
+        - fromFieldPath: "spec.parameters.name"
+          toFieldPath: "metadata.name"
       connectionDetails:
         - fromConnectionSecretKey: username
         - fromConnectionSecretKey: password

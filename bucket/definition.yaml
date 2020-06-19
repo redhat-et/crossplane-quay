@@ -5,9 +5,10 @@ metadata:
   name: buckets.storage.example.org
 spec:
   connectionSecretKeys:
-    - username
-    - password
-    - endpoint
+    - host
+    - secretKey
+    - accessKey
+    - bucketName
   crdSpecTemplate:
     group: storage.example.org
     version: v1alpha1
@@ -28,7 +29,10 @@ spec:
                 properties:
                   name:
                     type: string
+                  secret_name:
+                    type: string
                 required:
                   - name
+                  - secret_name
             required:
               - parameters

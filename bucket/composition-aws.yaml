@@ -21,7 +21,6 @@ spec:
           region: us-east-1
           cannedACL: private
           writeConnectionSecretToRef:
-            name: bucketsecret
             namespace: crossplane-system
           providerRef:
             name: aws-provider
@@ -32,10 +31,15 @@ spec:
           transforms:
             - type: string
               string:
-                fmt: "%s-bucket"
+                fmt: "%s-postgresql"
         - fromFieldPath: "spec.parameters.name"
           toFieldPath: "metadata.name"
       connectionDetails:
-        - fromConnectionSecretKey: username
-        - fromConnectionSecretKey: password
-        - fromConnectionSecretKey: endpoint
+        - name: host
+          fromConnectionSecretKey: endpoint
+        - name: accessKey
+          fromConnectionSecretKey: username
+        - name: secretKey
+          fromConnectionSecretKey: password
+        - name: bucketName
+          value: "s3bucket-test-quay.krish.redhat.com"

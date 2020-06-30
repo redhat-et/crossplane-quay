@@ -5,8 +5,10 @@ metadata:
   name: postgresqlinstances.database.example.org
 spec:
   connectionSecretKeys:
-    - username
-    - password
+    - database-username
+    - database-password
+    - database-root-password
+    - database-name
     - endpoint
     - port
   crdSpecTemplate:

@@ -157,7 +157,14 @@ spec:
         - fromFieldPath: "spec.parameters.storageGB"
           toFieldPath: "spec.forProvider.allocatedStorage"
       connectionDetails:
-        - fromConnectionSecretKey: username
-        - fromConnectionSecretKey: password
-        - fromConnectionSecretKey: endpoint
+        - name: database-user
+          fromConnectionSecretKey: username
+        - name: database-password
+          fromConnectionSecretKey: password
+        - name: database-root-password
+          value: postgrestest
+        - name: database-name
+          value: postgres
+        - name: server
+          fromConnectionSecretKey: endpoint
         - fromConnectionSecretKey: port

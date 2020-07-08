@@ -2,14 +2,13 @@ apiVersion: storage.example.org/v1alpha1
 kind: BucketRequirement
 metadata:
   name: s3bucket-test-quay.krish.redhat.com
-  namespace: default
+  namespace: quay-enterprise
 spec:
   parameters:
     name: s3bucket-test-quay.krish.redhat.com
-    secret_name: quay_secret
   compositionSelector:
     matchLabels:
       provider: aws
   writeConnectionSecretToRef:
     name: bucket-conn
-    namespace: default
+    namespace: quay-enterprise

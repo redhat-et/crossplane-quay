@@ -3,7 +3,7 @@ kind: Provider
 metadata:
   name: aws-provider
 spec:
-  region: us-east-1
+  region: us-east-2
   credentialsSecretRef:
     namespace: crossplane-system
     name: aws-creds

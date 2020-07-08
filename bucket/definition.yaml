@@ -29,10 +29,7 @@ spec:
                 properties:
                   name:
                     type: string
-                  secret_name:
-                    type: string
                 required:
                   - name
-                  - secret_name
             required:
               - parameters

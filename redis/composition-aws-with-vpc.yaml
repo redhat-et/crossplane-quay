@@ -115,7 +115,7 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
           groupName: crossplane-getting-started
-          description: Allow access to Redisz
+          description: Allow access to Redis
           ingress:
             - fromPort: 6379
               toPort: 6379
@@ -140,13 +140,6 @@ spec:
           providerRef:
             name: aws-provider
           reclaimPolicy: Delete
-      patches:
-        - fromFieldPath: "metadata.uid"
-          toFieldPath: "spec.writeConnectionSecretToRef.name"
-          transforms:
-            - type: string
-              string:
-                fmt: "%s-redis"
       connectionDetails:
         - fromConnectionSecretKey: endpoint
         - fromConnectionSecretKey: port

@@ -10,3 +10,4 @@ spec:
       vpc: new
   writeConnectionSecretToRef:
     name: redis-conn
+    namespace: default

@@ -21,7 +21,7 @@ spec:
       valueFrom:
         secretKeyRef:
           name: db-conn
-          key: database-username
+          key: database-user
     - name: PGPASSWORD
       valueFrom:
         secretKeyRef:

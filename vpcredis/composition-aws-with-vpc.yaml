@@ -28,12 +28,12 @@ spec:
         kind: Subnet
         metadata:
           labels:
-            zone: us-east-1a
+            zone: us-east-2a
         spec:
           cidrBlock: 192.168.64.0/18
           vpcIdSelector:
             matchControllerRef: true
-          availabilityZone: us-east-1a
+          availabilityZone: us-east-2a
           providerRef:
             name: aws-provider
           reclaimPolicy: Delete
@@ -42,12 +42,12 @@ spec:
         kind: Subnet
         metadata:
           labels:
-            zone: us-east-1b
+            zone: us-east-2b
         spec:
           cidrBlock: 192.168.128.0/18
           vpcIdSelector:
             matchControllerRef: true
-          availabilityZone: us-east-1b
+          availabilityZone: us-east-2b
           providerRef:
             name: aws-provider
           reclaimPolicy: Delete
@@ -56,12 +56,12 @@ spec:
         kind: Subnet
         metadata:
           labels:
-            zone: us-east-1c
+            zone: us-east-2c
         spec:
           cidrBlock: 192.168.192.0/18
           vpcIdSelector:
             matchControllerRef: true
-          availabilityZone: us-east-1c
+          availabilityZone: us-east-2c
           providerRef:
             name: aws-provider
           reclaimPolicy: Delete
@@ -98,13 +98,13 @@ spec:
           associations:
             - subnetIdSelector:
                 matchLabels:
-                  zone: us-east-1a
+                  zone: us-east-2a
             - subnetIdSelector:
                 matchLabels:
-                  zone: us-east-1b
+                  zone: us-east-2b
             - subnetIdSelector:
                 matchLabels:
-                  zone: us-east-1c
+                  zone: us-east-2c
           providerRef:
             name: aws-provider
           reclaimPolicy: Delete
@@ -137,6 +137,7 @@ spec:
             replicationGroupDescription: redis cluster for Quay
           writeConnectionSecretToRef:
             namespace: crossplane-system
+            name: redis-internal-secret
           providerRef:
             name: aws-provider
           reclaimPolicy: Delete

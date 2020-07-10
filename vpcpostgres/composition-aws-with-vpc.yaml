@@ -125,6 +125,7 @@ spec:
             publiclyAccessible: true
           writeConnectionSecretToRef:
             namespace: crossplane-system
+            name: postgres-secret-internal
           providerRef:
             name: aws-provider
           reclaimPolicy: Delete
@@ -138,7 +139,7 @@ spec:
         - fromFieldPath: "spec.parameters.storageGB"
           toFieldPath: "spec.forProvider.allocatedStorage"
       connectionDetails:
-        - name: database-user
+        - name: database-username
           fromConnectionSecretKey: username
         - name: database-password
           fromConnectionSecretKey: password

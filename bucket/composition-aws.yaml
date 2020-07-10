@@ -18,7 +18,7 @@ spec:
         kind: S3Bucket
         spec:
           localPermission: ReadWrite
-          region: us-east-1
+          region: us-east-2
           cannedACL: private
           writeConnectionSecretToRef:
             namespace: crossplane-system

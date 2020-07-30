@@ -1,24 +1,30 @@
 #!/bin/bash
-kind create cluster
+
+source variables.env
+
 kubectl create namespace crossplane-system
 
 helm repo add crossplane-alpha https://charts.crossplane.io/alpha
 
-# Kubernetes 1.15 and newer versions
 helm install crossplane --namespace crossplane-system crossplane-alpha/crossplane
 
-sleep 10
+kubectl apply -f roles.yaml
 
-PACKAGE=crossplane/provider-aws:v0.10.0
-NAME=provider-aws
+kubectl crossplane package install --cluster --namespace crossplane-system ${AWSPROVIDER} ${PROVIDERNAME} > /dev/null
+JSONPATH='{..status.conditionedStatus.conditions[0].status}'
 
-kubectl crossplane package install --cluster --namespace crossplane-system ${PACKAGE} ${NAME}
+echo "Waiting up to 30s for the provider to come up"
 
-sleep 10
+while [[ $(kubectl get -n crossplane-system clusterpackageinstall.packages.crossplane.io/${PROVIDERNAME} -o jsonpath=$JSONPATH) != "True" ]]
+do echo "Waiting for Provider" && sleep 1
+done
 
-AWS_PROFILE=default && echo -e "[default]\naws_access_key_id = $(aws configure get aws_access_key_id --profile $AWS_PROFILE)\naws_secret_access_key = $(aws configure get aws_secret_access_key --profile $AWS_PROFILE)" > creds.conf
-    
-kubectl create secret generic aws-creds -n crossplane-system --from-file=key=./creds.conf
-kubectl apply -f redis-clusterrole.yaml
-kubectl apply -f postgres-clusterrole.yaml
-kubectl apply -f bucket-clusterrole.yaml
+echo "Provider is up"
+
+./awscreds.sh
+
+oc apply -f aws_provider.yaml
+
+./compositions/setup.sh
+
+./make_dependencies.sh

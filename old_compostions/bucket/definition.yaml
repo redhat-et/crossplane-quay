@@ -2,23 +2,21 @@
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: InfrastructureDefinition
 metadata:
-  name: postgresqlinstances.database.example.org
+  name: buckets.storage.example.org
 spec:
   connectionSecretKeys:
-    - database-username
-    - database-password
-    - database-root-password
-    - database-name
-    - server
-    - port
+    - host
+    - secretKey
+    - accessKey
+    - bucketName
   crdSpecTemplate:
-    group: database.example.org
+    group: storage.example.org
     version: v1alpha1
     names:
-      kind: PostgreSQLInstance
-      listKind: PostgreSQLInstanceList
-      plural: postgresqlinstances
-      singular: postgresqlinstance
+      kind: Bucket
+      listKind: BucketList
+      plural: buckets
+      singular: bucket
     validation:
       openAPIV3Schema:
         type: object
@@ -29,9 +27,9 @@ spec:
               parameters:
                 type: object
                 properties:
-                  storageGB:
-                    type: integer
+                  name:
+                    type: string
                 required:
-                  - storageGB
+                  - name
             required:
               - parameters

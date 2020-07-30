@@ -5,7 +5,7 @@ metadata:
   name: redisclusters.cache.example.org
 spec:
   connectionSecretKeys:
-    - endpoint
+    - hostname
     - port
   crdSpecTemplate:
     group: cache.example.org

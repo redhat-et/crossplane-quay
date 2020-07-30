@@ -1,7 +1,18 @@
 apiVersion: redhatcop.redhat.io/v1alpha1
 kind: QuayEcosystem
 metadata:
-  name: example-quayecosystem
+  name: quayecosystem
 spec:
   quay:
-    imagePullSecretName: redhat-pull-secret
+    imagePullSecretName: redhat-quay-pull-secret
+    database:
+      credentialsSecretName: db-conn
+    registryBackends:
+      - name: s3bucket-quay
+        credentialsSecretName: bucket-conn
+        s3:
+          containerName: quay
+          bucketName: s3bucket-test-quay.krish.redhat.com
+  redis:
+    credentialsSecretName: redis-conn
+  

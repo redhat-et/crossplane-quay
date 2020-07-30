@@ -1,0 +1,147 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: Composition
+metadata:
+  name: vpcredisclusters.aws.cache.example.org
+  labels:
+    provider: aws
+    guide: quickstart
+    vpc: new 
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  reclaimPolicy: Delete
+  from:
+    apiVersion: cache.example.org/v1alpha1
+    kind: RedisCluster
+  to:
+    - base:
+        apiVersion: network.aws.crossplane.io/v1alpha3
+        kind: VPC
+        spec:
+          cidrBlock: 192.168.0.0/16
+          enableDnsSupport: true
+          enableDnsHostNames: true
+          providerRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+    - base:
+        apiVersion: network.aws.crossplane.io/v1alpha3
+        kind: Subnet
+        metadata:
+          labels:
+            zone: us-east-2a
+        spec:
+          cidrBlock: 192.168.64.0/18
+          vpcIdSelector:
+            matchControllerRef: true
+          availabilityZone: us-east-2a
+          providerRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+    - base:
+        apiVersion: network.aws.crossplane.io/v1alpha3
+        kind: Subnet
+        metadata:
+          labels:
+            zone: us-east-2b
+        spec:
+          cidrBlock: 192.168.128.0/18
+          vpcIdSelector:
+            matchControllerRef: true
+          availabilityZone: us-east-2b
+          providerRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+    - base:
+        apiVersion: network.aws.crossplane.io/v1alpha3
+        kind: Subnet
+        metadata:
+          labels:
+            zone: us-east-2c
+        spec:
+          cidrBlock: 192.168.192.0/18
+          vpcIdSelector:
+            matchControllerRef: true
+          availabilityZone: us-east-2c
+          providerRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+    - base:
+        apiVersion: cache.aws.crossplane.io/v1alpha1
+        kind: CacheSubnetGroup
+        spec:
+          forProvider:
+            description: An excellent formation of subnetworks.
+            subnetIdSelector:
+              matchControllerRef: true
+          providerRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+    - base:
+        apiVersion: network.aws.crossplane.io/v1alpha3
+        kind: InternetGateway
+        spec:
+          vpcIdSelector:
+            matchControllerRef: true
+          providerRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+    - base:
+        apiVersion: network.aws.crossplane.io/v1alpha3
+        kind: RouteTable
+        spec:
+          vpcIdSelector:
+            matchControllerRef: true
+          routes:
+            - destinationCidrBlock: 0.0.0.0/0
+              gatewayIdSelector:
+                matchControllerRef: true
+          associations:
+            - subnetIdSelector:
+                matchLabels:
+                  zone: us-east-2a
+            - subnetIdSelector:
+                matchLabels:
+                  zone: us-east-2b
+            - subnetIdSelector:
+                matchLabels:
+                  zone: us-east-2c
+          providerRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+    - base:
+        apiVersion: network.aws.crossplane.io/v1alpha3
+        kind: SecurityGroup
+        spec:
+          vpcIdSelector:
+            matchControllerRef: true
+          groupName: crossplane-getting-started
+          description: Allow access to Redis
+          ingress:
+            - fromPort: 6379
+              toPort: 6379
+              protocol: tcp
+              cidrBlocks:
+                - cidrIp: 0.0.0.0/0
+                  description: Everywhere
+          providerRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+    - base:
+        apiVersion: cache.aws.crossplane.io/v1beta1
+        kind: ReplicationGroup
+        spec:
+          forProvider:
+            cacheNodeType: cache.t2.small
+            applyModificationsImmediately: true
+            engine: redis
+            replicationGroupDescription: redis cluster for Quay
+          writeConnectionSecretToRef:
+            namespace: crossplane-system
+            name: redis-internal-secret
+          providerRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+      connectionDetails:
+        - name: hostname
+          fromConnectionSecretKey: endpoint
+        - fromConnectionSecretKey: port

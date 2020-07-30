@@ -142,5 +142,6 @@ spec:
             name: aws-provider
           reclaimPolicy: Delete
       connectionDetails:
-        - fromConnectionSecretKey: endpoint
+        - name: hostname
+          fromConnectionSecretKey: endpoint
         - fromConnectionSecretKey: port

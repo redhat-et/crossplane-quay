@@ -5,7 +5,7 @@ metadata:
   labels:
     provider: aws
     guide: quickstart
-    vpc: vpc-00fa8accd8743137f
+    vpc: vpc-01ab2e4b5c002142c
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   reclaimPolicy: Delete
@@ -22,7 +22,7 @@ spec:
             zone: us-east-2a
         spec:
           cidrBlock: 10.0.96.0/24
-          vpcId: vpc-00fa8accd8743137f
+          vpcId: vpc-01ab2e4b5c002142c
           availabilityZone: us-east-2a
           providerRef:
             name: aws-provider
@@ -36,7 +36,7 @@ spec:
             zone: us-east-2b
         spec:
           cidrBlock: 10.0.97.0/24
-          vpcId: vpc-00fa8accd8743137f
+          vpcId: vpc-01ab2e4b5c002142c
           availabilityZone: us-east-2b
           providerRef:
             name: aws-provider
@@ -50,7 +50,7 @@ spec:
             zone: us-east-2c
         spec:
           cidrBlock: 10.0.98.0/24
-          vpcId: vpc-00fa8accd8743137f
+          vpcId: vpc-01ab2e4b5c002142c
           availabilityZone: us-east-2c
           providerRef:
             name: aws-provider
@@ -70,10 +70,10 @@ spec:
         apiVersion: network.aws.crossplane.io/v1alpha3
         kind: RouteTable
         spec:
-          vpcId: vpc-00fa8accd8743137f
+          vpcId: vpc-01ab2e4b5c002142c
           routes:
             - destinationCidrBlock: 0.0.0.0/0
-              gatewayId: igw-07a6c09d1284e0e86
+              gatewayId: igw-022fb5345ff700d44
           associations:
             - subnetIdSelector:
                 matchLabels:
@@ -94,7 +94,7 @@ spec:
         apiVersion: network.aws.crossplane.io/v1alpha3
         kind: SecurityGroup
         spec:
-          vpcId: vpc-00fa8accd8743137f
+          vpcId: vpc-01ab2e4b5c002142c
           groupName: crossplane-postgres
           description: Allow access to PostgreSQL
           ingress:
@@ -146,6 +146,6 @@ spec:
           value: postgrestest
         - name: database-name
           value: postgres
-        - name: server
+        - name: database-server
           fromConnectionSecretKey: endpoint
         - fromConnectionSecretKey: port

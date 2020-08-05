@@ -131,10 +131,12 @@ spec:
         kind: ReplicationGroup
         spec:
           forProvider:
-            cacheNodeType: cache.t2.small
+            cacheNodeType: cache.t3.medium
             applyModificationsImmediately: true
             engine: redis
             replicationGroupDescription: redis cluster for Quay
+            cacheSubnetGroupNameSelector:
+              matchControllerRef: true
           writeConnectionSecretToRef:
             namespace: crossplane-system
             name: redis-internal-secret

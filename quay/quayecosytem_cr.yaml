@@ -4,9 +4,9 @@ metadata:
   name: quayecosystem
 spec:
   quay:
-    imagePullSecretName: redhat-quay-pull-secret
     database:
       credentialsSecretName: db-conn
+    imagePullSecretName: redhat-quay-pull-secret
     registryBackends:
       - name: s3bucket-quay
         credentialsSecretName: bucket-conn
@@ -15,4 +15,3 @@ spec:
           bucketName: s3bucket-test-quay.krish.redhat.com
   redis:
     credentialsSecretName: redis-conn
-  

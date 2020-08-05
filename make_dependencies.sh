@@ -14,7 +14,6 @@ done
 
 echo "Bucket created"
 
-seconds=0
 until oc get secret db-conn > /dev/null 2>&1
 do
 echo "Waiting for Postgres Instance - $seconds seconds have passed"
@@ -24,7 +23,6 @@ done
 
 echo "Postgres created"
 
-seconds=0
 until oc get secret redis-conn > /dev/null 2>&1
 do
 echo "Waiting for Redis Cluster - $seconds seconds have passed"

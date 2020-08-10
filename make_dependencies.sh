@@ -2,7 +2,7 @@
 
 cd $(dirname $0)
 
-oc apply -f requirements/
+oc apply -f helm/output/quay-cp/templates/requirements.yaml
 
 seconds=0
 until oc get secret bucket-conn > /dev/null 2>&1
@@ -31,8 +31,3 @@ seconds=`expr $seconds + 5`
 done
 
 echo "Redis created"
-
-# redis=$(oc get secret redis-conn -o jsonpath="{.data.endpoint}" | base64 --decode)
-# postgres=$(oc get secret db-conn -o jsonpath="{.data.server}" | base64 --decode)
-# echo "Postgres server: $postgres"
-# echo "Redis instance: $redis"

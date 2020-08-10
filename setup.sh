@@ -13,7 +13,7 @@ kubectl apply -f roles.yaml
 kubectl crossplane package install --cluster --namespace crossplane-system ${AWSPROVIDER} ${PROVIDERNAME} > /dev/null
 JSONPATH='{..status.conditionedStatus.conditions[0].status}'
 
-echo "Waiting up to 30s for the provider to come up"
+echo "Waiting for the provider to come up"
 
 while [[ $(kubectl get -n crossplane-system clusterpackageinstall.packages.crossplane.io/${PROVIDERNAME} -o jsonpath=$JSONPATH) != "True" ]]
 do echo "Waiting for Provider" && sleep 1
@@ -25,7 +25,13 @@ echo "Provider is up"
 
 oc apply -f aws_provider.yaml
 
-./compositions/setup.sh
+cd helm
+
+helm template . --output-dir output
+
+oc apply -f output/quay-cp/templates/compositions
+
+cd ..
 
 echo "Waiting for CR - bucket"
 until oc get crd bucketrequirements.storage.example.org
@@ -43,3 +49,7 @@ do sleep 1
 done
 
 ./make_dependencies.sh
+
+./quay/setup_quay.sh
+
+oc apply -f helm/output/quay-cp/templates/quay.yaml

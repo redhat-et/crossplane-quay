@@ -1,0 +1,8 @@
+bucketName: 's3buckettestquayredhat'
+s3Secret: 'bucket-conn'
+redisSecret: 'redis-conn'
+postgresSecret: 'db-conn'
+pullSecret: 'redhat-quay-pull-secret'
+region: 'us-east-2'
+vpcId: 'vpc-0e0f6fd1f2cfab33d'
+igwId: 'igw-07d8cf537448bc077'

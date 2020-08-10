@@ -19,5 +19,3 @@ seconds=`expr $seconds + 5`
 done
 
 echo "Quay operator is up"
-
-oc apply -f quayecosytem_cr.yaml

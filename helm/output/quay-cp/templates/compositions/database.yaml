@@ -1,3 +1,5 @@
+---
+# Source: quay-cp/templates/compositions/database.yaml
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: Composition
 metadata:
@@ -5,7 +7,7 @@ metadata:
   labels:
     provider: aws
     guide: quickstart
-    vpc: vpc-01ab2e4b5c002142c
+    vpc: vpc-0e0f6fd1f2cfab33d
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   reclaimPolicy: Delete
@@ -14,44 +16,47 @@ spec:
     kind: PostgreSQLInstance
   to:
     - base:
-        apiVersion: network.aws.crossplane.io/v1alpha3
+        apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: Subnet
         metadata:
           labels:
             desc: postgres
             zone: us-east-2a
         spec:
-          cidrBlock: 10.0.96.0/24
-          vpcId: vpc-01ab2e4b5c002142c
-          availabilityZone: us-east-2a
+          forProvider:
+            cidrBlock: 10.0.96.0/24
+            vpcId: vpc-0e0f6fd1f2cfab33d
+            availabilityZone: us-east-2a
           providerRef:
             name: aws-provider
           reclaimPolicy: Delete
     - base:
-        apiVersion: network.aws.crossplane.io/v1alpha3
+        apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: Subnet
         metadata:
           labels:
             desc: postgres
             zone: us-east-2b
         spec:
-          cidrBlock: 10.0.97.0/24
-          vpcId: vpc-01ab2e4b5c002142c
-          availabilityZone: us-east-2b
+          forProvider:
+            cidrBlock: 10.0.97.0/24
+            vpcId: vpc-0e0f6fd1f2cfab33d
+            availabilityZone: us-east-2b
           providerRef:
             name: aws-provider
           reclaimPolicy: Delete
     - base:
-        apiVersion: network.aws.crossplane.io/v1alpha3
+        apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: Subnet
         metadata:
           labels:
             desc: postgres
             zone: us-east-2c
         spec:
-          cidrBlock: 10.0.98.0/24
-          vpcId: vpc-01ab2e4b5c002142c
-          availabilityZone: us-east-2c
+          forProvider:
+            cidrBlock: 10.0.98.0/24
+            vpcId: vpc-0e0f6fd1f2cfab33d
+            availabilityZone: us-east-2c
           providerRef:
             name: aws-provider
           reclaimPolicy: Delete
@@ -67,43 +72,45 @@ spec:
             name: aws-provider
           reclaimPolicy: Delete
     - base:
-        apiVersion: network.aws.crossplane.io/v1alpha3
+        apiVersion: ec2.aws.crossplane.io/v1alpha4
         kind: RouteTable
         spec:
-          vpcId: vpc-01ab2e4b5c002142c
-          routes:
-            - destinationCidrBlock: 0.0.0.0/0
-              gatewayId: igw-022fb5345ff700d44
-          associations:
-            - subnetIdSelector:
-                matchLabels:
-                  desc: postgres
-                  zone: us-east-2a
-            - subnetIdSelector:
-                matchLabels:
-                  desc: postgres
-                  zone: us-east-2b
-            - subnetIdSelector:
-                matchLabels:
-                  desc: postgres
-                  zone: us-east-2c
+          forProvider:
+            vpcId: vpc-0e0f6fd1f2cfab33d
+            routes:
+              - destinationCidrBlock: 0.0.0.0/0
+                gatewayId: igw-07d8cf537448bc077
+            associations:
+              - subnetIdSelector:
+                  matchLabels:
+                    desc: postgres
+                    zone: us-east-2a
+              - subnetIdSelector:
+                  matchLabels:
+                    desc: postgres
+                    zone: us-east-2b
+              - subnetIdSelector:
+                  matchLabels:
+                    desc: postgres
+                    zone: us-east-2c
           providerRef:
             name: aws-provider
           reclaimPolicy: Delete
     - base:
-        apiVersion: network.aws.crossplane.io/v1alpha3
+        apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: SecurityGroup
         spec:
-          vpcId: vpc-01ab2e4b5c002142c
-          groupName: crossplane-postgres
-          description: Allow access to PostgreSQL
-          ingress:
+          forProvider:
+            vpcId: vpc-0e0f6fd1f2cfab33d
+            groupName: crossplane-postgres
+            description: Allow access to PostgreSQL
+            ingress:
             - fromPort: 5432
               toPort: 5432
-              protocol: tcp
-              cidrBlocks:
-                - cidrIp: 0.0.0.0/0
-                  description: Everywhere
+              ipProtocol: tcp
+              ipRanges:
+              - cidrIp: 0.0.0.0/0
+                description: Everywhere
           providerRef:
             name: aws-provider
           reclaimPolicy: Delete
@@ -149,3 +156,50 @@ spec:
         - name: database-server
           fromConnectionSecretKey: endpoint
         - fromConnectionSecretKey: port
+---
+# Source: quay-cp/templates/compositions/database.yaml
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: InfrastructureDefinition
+metadata:
+  name: postgresqlinstances.database.example.org
+spec:
+  connectionSecretKeys:
+    - database-username
+    - database-password
+    - database-root-password
+    - database-name
+    - database-server
+    - port
+  crdSpecTemplate:
+    group: database.example.org
+    version: v1alpha1
+    names:
+      kind: PostgreSQLInstance
+      listKind: PostgreSQLInstanceList
+      plural: postgresqlinstances
+      singular: postgresqlinstance
+    validation:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              parameters:
+                type: object
+                properties:
+                  storageGB:
+                    type: integer
+                required:
+                  - storageGB
+            required:
+              - parameters
+---
+# Source: quay-cp/templates/compositions/database.yaml
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: InfrastructurePublication
+metadata:
+  name: postgresqlinstances.database.example.org
+spec:
+  infrastructureDefinitionRef:
+    name: postgresqlinstances.database.example.org

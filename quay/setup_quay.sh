@@ -11,7 +11,7 @@ oc apply -f operator.yaml
 JSONPATH='{..status.conditions[0].status}'
 
 seconds=0
-while [[ $(kubectl get -f operator.yaml -o jsonpath=$JSONPATH) != "True" ]]
+while [[ $(oc get -f operator.yaml -o jsonpath=$JSONPATH) != "True" ]]
 do
 echo "Waiting for Quay Operator - $seconds seconds have passed"
 sleep 5

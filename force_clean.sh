@@ -16,6 +16,6 @@ oc delete namespace crossplane-system
 # PACKAGE=krishchow/provider-aws:latest
 # NAME=provider-aws
 # oc delete -f aws_provider.yaml
-# kubectl crossplane package uninstall --cluster --namespace crossplane-system ${NAME}
+# oc crossplane package uninstall --cluster --namespace crossplane-system ${NAME}
 # oc get crds -o name | grep oam | xargs oc delete 
 # kind delete cluster

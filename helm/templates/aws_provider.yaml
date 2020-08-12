@@ -1,0 +1,10 @@
+apiVersion: aws.crossplane.io/v1alpha3
+kind: Provider
+metadata:
+  name: aws-provider
+spec:
+  region: {{ .Values.region | quote }}
+  credentialsSecretRef:
+    namespace: crossplane-system
+    name: aws-creds
+    key: key

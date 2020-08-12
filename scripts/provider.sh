@@ -14,4 +14,4 @@ echo "Provider is up"
 
 ./scripts/awscreds.sh
 
-oc apply -f aws_provider.yaml
+oc apply -f ./helm/output/quay-cp/templates/aws_provider.yaml

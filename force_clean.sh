@@ -3,7 +3,7 @@ source variables.env
 
 oc delete -f helm/output/quay-cp/templates/requirements.yaml
 oc delete -f helm/output/quay-cp/templates/compositions&
-oc delete -f aws_provider.yaml
+oc delete -f ./helm/output/quay-cp/templates/aws_provider.yaml
 oc delete secret generic aws-creds
 oc crossplane package uninstall --cluster --namespace crossplane-system ${PROVIDERNAME}
 oc delete -f roles.yaml

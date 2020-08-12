@@ -36,3 +36,8 @@ Currently it seems like there is an issue with deploying the AWS provider. The d
 An issue has been opened on the upstream [provider-aws](https://github.com/crossplane/provider-aws/issues/316).
 
 In order to delete the dependencies, you will need to empty the S3 Bucket manually via the AWS console. You cannot delete a bucket that has objects in it, so Crossplane will not be able to delete that CR or Bucket. It does not seem like there is a simple work around for this issue.
+
+## Future Work
+
+- Allowing for dynamically created VPCs/IGWs, currently we required that the user passes in a VPC ID and IGW ID.
+- Support for VPC Peering, one potential method may use [Submariner](https://github.com/submariner-io/submariner)

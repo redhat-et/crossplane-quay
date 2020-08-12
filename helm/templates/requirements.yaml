@@ -40,3 +40,13 @@ spec:
   writeConnectionSecretToRef:
     name: {{ .Values.postgresSecret }}
     namespace: default
+---
+apiVersion: ec2.example.org/v1alpha1
+kind: NetworkGroupRequirement
+metadata:
+  name: my-network
+  namespace: default
+spec:
+  compositionSelector:
+    matchLabels:
+      provider: aws

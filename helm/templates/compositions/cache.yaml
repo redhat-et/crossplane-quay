@@ -46,108 +46,14 @@ spec:
     kind: RedisCluster
   to:
     - base:
-        apiVersion: ec2.aws.crossplane.io/v1beta1
-        kind: Subnet
-        metadata:
-          labels:
-            desc: redis
-            zone: {{ printf "%sa" .Values.region }}
-        spec:
-          forProvider:
-            cidrBlock: 10.0.99.0/24
-            vpcId: {{ .Values.vpcId }}
-            availabilityZone: {{ printf "%sa" .Values.region }}
-          providerRef:
-            name: aws-provider
-          reclaimPolicy: Delete
-    - base:
-        apiVersion: ec2.aws.crossplane.io/v1beta1
-        kind: Subnet
-        metadata:
-          labels:
-            desc: redis
-            zone: {{ printf "%sb" .Values.region }}
-        spec:
-          forProvider:
-            cidrBlock: 10.0.100.0/24
-            vpcId: {{ .Values.vpcId }}
-            availabilityZone: {{ printf "%sb" .Values.region }}
-          providerRef:
-            name: aws-provider
-          reclaimPolicy: Delete
-    - base:
-        apiVersion: ec2.aws.crossplane.io/v1beta1
-        kind: Subnet
-        metadata:
-          labels:
-            desc: redis
-            zone: {{ printf "%sc" .Values.region }}
-        spec:
-          forProvider:
-            cidrBlock: 10.0.101.0/24
-            vpcId: {{ .Values.vpcId }}
-            availabilityZone: {{ printf "%sc" .Values.region }}
-          providerRef:
-            name: aws-provider
-          reclaimPolicy: Delete
-    - base:
         apiVersion: cache.aws.crossplane.io/v1alpha1
         kind: CacheSubnetGroup
         spec:
           forProvider:
             description: An excellent formation of subnetworks.
             subnetIdSelector:
-              matchControllerRef: true
-          providerRef:
-            name: aws-provider
-          reclaimPolicy: Delete
-    - base:
-        apiVersion: ec2.aws.crossplane.io/v1alpha4
-        kind: RouteTable
-        spec:
-          forProvider:
-            vpcId: {{ .Values.vpcId }}
-            routes:
-              - destinationCidrBlock: 0.0.0.0/0
-                gatewayId: {{ .Values.igwId }}
-            associations:
-              - subnetIdSelector:
-                  matchLabels:
-                    desc: redis
-                    zone: {{ printf "%sa" .Values.region }}
-              - subnetIdSelector:
-                  matchLabels:
-                    desc: redis
-                    zone: {{ printf "%sb" .Values.region }}
-              - subnetIdSelector:
-                  matchLabels:
-                    desc: redis
-                    zone: {{ printf "%sc" .Values.region }}
-          providerRef:
-            name: aws-provider
-          reclaimPolicy: Delete
-    - base:
-        apiVersion: ec2.aws.crossplane.io/v1beta1
-        kind: SecurityGroup
-        spec:
-          forProvider:
-            vpcId: {{ .Values.vpcId }}
-            groupName: crossplane-redis
-            description: Allow access to Redis
-            ingress:
-            - fromPort: 6379
-              toPort: 6379
-              ipProtocol: tcp
-              ipRanges:
-              - cidrIp: 0.0.0.0/0
-                description: Everywhere
-            egress:
-            - fromPort: 6379
-              toPort: 6379
-              ipProtocol: tcp
-              ipRanges:
-              - cidrIp: 0.0.0.0/0
-                description: Everywhere
+              matchLabels:
+                desc: quay
           providerRef:
             name: aws-provider
           reclaimPolicy: Delete
@@ -163,7 +69,8 @@ spec:
             cacheSubnetGroupNameSelector:
               matchControllerRef: true
             securityGroupIdSelector:
-              matchControllerRef: true
+              matchLabels:
+                desc: quay
           writeConnectionSecretToRef:
             namespace: crossplane-system
             name: redis-internal-secret

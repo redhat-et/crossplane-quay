@@ -16,101 +16,14 @@ spec:
     kind: PostgreSQLInstance
   to:
     - base:
-        apiVersion: ec2.aws.crossplane.io/v1beta1
-        kind: Subnet
-        metadata:
-          labels:
-            desc: postgres
-            zone: us-east-2a
-        spec:
-          forProvider:
-            cidrBlock: 10.0.96.0/24
-            vpcId: vpc-0e0f6fd1f2cfab33d
-            availabilityZone: us-east-2a
-          providerRef:
-            name: aws-provider
-          reclaimPolicy: Delete
-    - base:
-        apiVersion: ec2.aws.crossplane.io/v1beta1
-        kind: Subnet
-        metadata:
-          labels:
-            desc: postgres
-            zone: us-east-2b
-        spec:
-          forProvider:
-            cidrBlock: 10.0.97.0/24
-            vpcId: vpc-0e0f6fd1f2cfab33d
-            availabilityZone: us-east-2b
-          providerRef:
-            name: aws-provider
-          reclaimPolicy: Delete
-    - base:
-        apiVersion: ec2.aws.crossplane.io/v1beta1
-        kind: Subnet
-        metadata:
-          labels:
-            desc: postgres
-            zone: us-east-2c
-        spec:
-          forProvider:
-            cidrBlock: 10.0.98.0/24
-            vpcId: vpc-0e0f6fd1f2cfab33d
-            availabilityZone: us-east-2c
-          providerRef:
-            name: aws-provider
-          reclaimPolicy: Delete
-    - base:
         apiVersion: database.aws.crossplane.io/v1beta1
         kind: DBSubnetGroup
         spec:
           forProvider:
             description: An excellent formation of subnetworks.
             subnetIdSelector:
-              matchControllerRef: true
-          providerRef:
-            name: aws-provider
-          reclaimPolicy: Delete
-    - base:
-        apiVersion: ec2.aws.crossplane.io/v1alpha4
-        kind: RouteTable
-        spec:
-          forProvider:
-            vpcId: vpc-0e0f6fd1f2cfab33d
-            routes:
-              - destinationCidrBlock: 0.0.0.0/0
-                gatewayId: igw-07d8cf537448bc077
-            associations:
-              - subnetIdSelector:
-                  matchLabels:
-                    desc: postgres
-                    zone: us-east-2a
-              - subnetIdSelector:
-                  matchLabels:
-                    desc: postgres
-                    zone: us-east-2b
-              - subnetIdSelector:
-                  matchLabels:
-                    desc: postgres
-                    zone: us-east-2c
-          providerRef:
-            name: aws-provider
-          reclaimPolicy: Delete
-    - base:
-        apiVersion: ec2.aws.crossplane.io/v1beta1
-        kind: SecurityGroup
-        spec:
-          forProvider:
-            vpcId: vpc-0e0f6fd1f2cfab33d
-            groupName: crossplane-postgres
-            description: Allow access to PostgreSQL
-            ingress:
-            - fromPort: 5432
-              toPort: 5432
-              ipProtocol: tcp
-              ipRanges:
-              - cidrIp: 0.0.0.0/0
-                description: Everywhere
+              matchLabels:
+                desc: quay
           providerRef:
             name: aws-provider
           reclaimPolicy: Delete
@@ -122,7 +35,8 @@ spec:
             dbSubnetGroupNameSelector:
               matchControllerRef: true
             vpcSecurityGroupIDSelector:
-              matchControllerRef: true
+              matchLabels:
+                desc: quay
             dbInstanceClass: db.t2.small
             masterUsername: masteruser
             engine: postgres

@@ -16,6 +16,17 @@ spec:
     namespace: default
 ---
 # Source: quay-cp/templates/requirements.yaml
+apiVersion: ec2.example.org/v1alpha1
+kind: NetworkGroupRequirement
+metadata:
+  name: my-network
+  namespace: default
+spec:
+  compositionSelector:
+    matchLabels:
+      provider: aws
+---
+# Source: quay-cp/templates/requirements.yaml
 apiVersion: database.example.org/v1alpha1
 kind: PostgreSQLInstanceRequirement
 metadata:

@@ -48,3 +48,20 @@ rules:
   - redisclusterrequirements/status
   verbs:
   - "*"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: networkgroup.ec2.example.org
+  labels:
+    rbac.crossplane.io/aggregate-to-crossplane: "true"
+rules:
+- apiGroups:
+  - ec2.example.org
+  resources:
+  - networkgroups
+  - networkgroups/status
+  - networkgrouprequirements
+  - networkgrouprequirements/status
+  verbs:
+  - "*"

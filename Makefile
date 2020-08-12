@@ -15,7 +15,7 @@ crossplane:
 provider:
 	./scripts/provider.sh
 
-compositions:
+compositions: build
 	./scripts/compositions.sh
 
 dependencies: compositions
@@ -28,8 +28,8 @@ clean-dependencies:
 	oc delete -f helm/output/quay-cp/templates/requirements.yaml
 
 clean-quay:
-	oc delete -f helm/output/quay-cp/templates/quay.yaml
-	./quay/teardown_quay.sh
+	oc delete -f helm/output/quay-cp/templates/quay.yaml&
+	./quay/teardown_quay.sh&
 
 clean: clean-quay clean-dependencies
 

@@ -7,7 +7,7 @@ metadata:
   labels:
     provider: aws
     guide: quickstart
-    vpc: vpc-0e0f6fd1f2cfab33d
+    vpc: vpc-0400e5dc4c187a724
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   reclaimPolicy: Delete
@@ -15,17 +15,22 @@ spec:
     apiVersion: ec2.example.org/v1alpha1
     kind: NetworkGroup
   to:
+    
+    
     - base:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: Subnet
         metadata:
+          namespace: "default"
           labels:
             desc: quay
             zone: us-east-2a
         spec:
           forProvider:
             cidrBlock: 10.0.99.0/24
-            vpcId: vpc-0e0f6fd1f2cfab33d
+            
+            vpcId: vpc-0400e5dc4c187a724
+            
             availabilityZone: us-east-2a
           providerRef:
             name: aws-provider
@@ -34,13 +39,16 @@ spec:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: Subnet
         metadata:
+          namespace: "default"
           labels:
             desc: quay
             zone: us-east-2b
         spec:
           forProvider:
             cidrBlock: 10.0.100.0/24
-            vpcId: vpc-0e0f6fd1f2cfab33d
+            
+            vpcId: vpc-0400e5dc4c187a724
+            
             availabilityZone: us-east-2b
           providerRef:
             name: aws-provider
@@ -49,13 +57,16 @@ spec:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: Subnet
         metadata:
+          namespace: "default"
           labels:
             desc: quay
             zone: us-east-2c
         spec:
           forProvider:
             cidrBlock: 10.0.101.0/24
-            vpcId: vpc-0e0f6fd1f2cfab33d
+            
+            vpcId: vpc-0400e5dc4c187a724
+            
             availabilityZone: us-east-2c
           providerRef:
             name: aws-provider
@@ -63,12 +74,18 @@ spec:
     - base:
         apiVersion: ec2.aws.crossplane.io/v1alpha4
         kind: RouteTable
+        metadata:
+          namespace: "default"
         spec:
           forProvider:
-            vpcId: vpc-0e0f6fd1f2cfab33d
+            
+            vpcId: vpc-0400e5dc4c187a724
+            
             routes:
               - destinationCidrBlock: 0.0.0.0/0
-                gatewayId: igw-07d8cf537448bc077
+                
+                gatewayId: igw-067952e808965a9ae
+                
             associations:
               - subnetIdSelector:
                   matchLabels:
@@ -89,11 +106,14 @@ spec:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: SecurityGroup
         metadata:
+          namespace: "default"
           labels:
             desc: quay
         spec:
           forProvider:
-            vpcId: vpc-0e0f6fd1f2cfab33d
+            
+            vpcId: vpc-0400e5dc4c187a724
+            
             groupName: crossplane-quay
             description: Allow access to Quay dependencies
             ingress:
@@ -112,6 +132,12 @@ spec:
             egress:
             - fromPort: 6379
               toPort: 6379
+              ipProtocol: tcp
+              ipRanges:
+              - cidrIp: 0.0.0.0/0
+                description: Everywhere
+            - fromPort: 5432
+              toPort: 5432
               ipProtocol: tcp
               ipRanges:
               - cidrIp: 0.0.0.0/0

@@ -1,11 +1,16 @@
 bucketName: 's3buckettestquayredhat'
+namespace: default
+
 s3Secret: 'bucket-conn'
 redisSecret: 'redis-conn'
 postgresSecret: 'db-conn'
 pullSecret: 'redhat-quay-pull-secret'
+
 region: 'us-east-2'
-vpcId: 'vpc-0e0f6fd1f2cfab33d'
-igwId: 'igw-07d8cf537448bc077'
+vpcId: 'vpc-0400e5dc4c187a724'
+igwId: 'igw-067952e808965a9ae'
 aZCIDRa: '10.0.99.0/24'
 aZCIDRb: '10.0.100.0/24'
 aZCIDRc: '10.0.101.0/24'
+
+externalCache: false

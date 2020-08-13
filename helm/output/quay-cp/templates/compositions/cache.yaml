@@ -7,7 +7,7 @@ metadata:
   labels:
     provider: aws
     guide: quickstart
-    vpc: vpc-0e0f6fd1f2cfab33d
+    vpc: vpc-0400e5dc4c187a724
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   reclaimPolicy: Delete
@@ -18,6 +18,8 @@ spec:
     - base:
         apiVersion: cache.aws.crossplane.io/v1alpha1
         kind: CacheSubnetGroup
+        metadata:
+          namespace: "default"
         spec:
           forProvider:
             description: An excellent formation of subnetworks.
@@ -30,6 +32,8 @@ spec:
     - base:
         apiVersion: cache.aws.crossplane.io/v1beta1
         kind: ReplicationGroup
+        metadata:
+          namespace: "default"
         spec:
           forProvider:
             cacheNodeType: cache.t3.medium
@@ -51,6 +55,13 @@ spec:
         - name: hostname
           fromConnectionSecretKey: endpoint
         - fromConnectionSecretKey: port
+      patches:
+        - fromFieldPath: "metadata.uid"
+          toFieldPath: "spec.writeConnectionSecretToRef.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-redis"
 ---
 # Source: quay-cp/templates/compositions/cache.yaml
 apiVersion: apiextensions.crossplane.io/v1alpha1

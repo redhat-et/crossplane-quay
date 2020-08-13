@@ -4,6 +4,7 @@ apiVersion: aws.crossplane.io/v1alpha3
 kind: Provider
 metadata:
   name: aws-provider
+  namespace: "default"
 spec:
   region: "us-east-2"
   credentialsSecretRef:

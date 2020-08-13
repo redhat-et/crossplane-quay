@@ -4,7 +4,7 @@ apiVersion: storage.example.org/v1alpha1
 kind: BucketRequirement
 metadata:
   name: s3buckettestquayredhat
-  namespace: default
+  namespace: "default"
 spec:
   parameters:
     name: s3buckettestquayredhat
@@ -13,14 +13,14 @@ spec:
       provider: aws
   writeConnectionSecretToRef:
     name: bucket-conn
-    namespace: default
+    namespace: "default"
 ---
 # Source: quay-cp/templates/requirements.yaml
 apiVersion: ec2.example.org/v1alpha1
 kind: NetworkGroupRequirement
 metadata:
   name: my-network
-  namespace: default
+  namespace: "default"
 spec:
   compositionSelector:
     matchLabels:
@@ -31,7 +31,7 @@ apiVersion: database.example.org/v1alpha1
 kind: PostgreSQLInstanceRequirement
 metadata:
   name: my-db
-  namespace: default
+  namespace: "default"
 spec:
   parameters:
     storageGB: 10
@@ -40,18 +40,4 @@ spec:
       provider: aws
   writeConnectionSecretToRef:
     name: db-conn
-    namespace: default
----
-# Source: quay-cp/templates/requirements.yaml
-apiVersion: cache.example.org/v1alpha1
-kind: RedisClusterRequirement
-metadata:
-  name: my-redis
-  namespace: default
-spec:
-  compositionSelector:
-    matchLabels:
-      provider: aws
-  writeConnectionSecretToRef:
-    name: redis-conn
-    namespace: default
+    namespace: "default"

@@ -48,6 +48,8 @@ spec:
     - base:
         apiVersion: cache.aws.crossplane.io/v1alpha1
         kind: CacheSubnetGroup
+        metadata:
+          namespace: {{ .Values.namespace | default "default" | quote }}
         spec:
           forProvider:
             description: An excellent formation of subnetworks.
@@ -60,6 +62,8 @@ spec:
     - base:
         apiVersion: cache.aws.crossplane.io/v1beta1
         kind: ReplicationGroup
+        metadata:
+          namespace: {{ .Values.namespace | default "default" | quote }}
         spec:
           forProvider:
             cacheNodeType: cache.t3.medium
@@ -81,3 +85,10 @@ spec:
         - name: hostname
           fromConnectionSecretKey: endpoint
         - fromConnectionSecretKey: port
+      patches:
+        - fromFieldPath: "metadata.uid"
+          toFieldPath: "spec.writeConnectionSecretToRef.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-redis"

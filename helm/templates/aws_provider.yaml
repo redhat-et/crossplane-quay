@@ -2,6 +2,7 @@ apiVersion: aws.crossplane.io/v1alpha3
 kind: Provider
 metadata:
   name: aws-provider
+  namespace: {{ .Values.namespace | default "default" | quote }}
 spec:
   region: {{ .Values.region | quote }}
   credentialsSecretRef:

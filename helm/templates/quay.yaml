@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: prep-db
-  namespace: default
+  namespace: {{ .Values.namespace | default "default" | quote }}
 spec:
   backoffLimit: 4
   template:
@@ -41,6 +41,7 @@ apiVersion: redhatcop.redhat.io/v1alpha1
 kind: QuayEcosystem
 metadata:
   name: quayecosystem
+  namespace: {{ .Values.namespace | default "default" | quote }}
 spec:
   quay:
     database:

@@ -41,3 +41,17 @@ spec:
   writeConnectionSecretToRef:
     name: db-conn
     namespace: "default"
+---
+# Source: quay-cp/templates/requirements.yaml
+apiVersion: cache.example.org/v1alpha1
+kind: RedisClusterRequirement
+metadata:
+  name: my-redis
+  namespace: "default"
+spec:
+  compositionSelector:
+    matchLabels:
+      provider: aws
+  writeConnectionSecretToRef:
+    name: redis-conn
+  namespace: "default"

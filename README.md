@@ -1,5 +1,18 @@
 # Quay Deployment on Kubernetes via Crossplane
 
+## Objective
+
+The goal of this project is to demonstrate what production-like deployment using the [Crossplane Operator](http://crossplane.io/) will look like. By utilizing the [AWS Provider](https://github.com/crossplane/provider-aws) we can create and configure managed resources on AWS, these can then be consumed by other services and deployments in our Openshift Cluster.
+
+In this deployment, we will be creating the following resources in AWS:
+
+- Networking Resources - We create Subnets, a Route Table, Subnet groups and optionally a VPC.
+- RDS Instance - We create an RDS Instance for the PostgreSQL instance to be used by Quay.
+- ElastiCache Cluster - We create an elastic cluster with Redis to be used by Quay.
+- S3 Bucket - We will be creating an S3 Bucket along with the corresponding generated policy for that Bucket. S3 will form the actual registry backend for Quay.
+
+The S3 Bucket, RDS Instance and ElastiCache Cluster will all create secrets that are in turn consumed by the [Quay Operator](https://github.com/redhat-cop/quay-operator).
+
 ## Prerequisites
 
 You need the follow items setup prior to development
@@ -17,13 +30,72 @@ To set up the project you need to run clone this [github repository](https://git
 - `make crossplane` - This will install crossplane into the Kubernetes cluster in the `crossplane-system` namespace
 - `make provider` - This will install the AWS Provider into the `crossplane-system` namespace, but the CRs will be available in the entire cluster.
 
+### Verifying Status
+
+Although the setup scripts will provide some output, for more detailed information, open a second shell and set the KUBECONFIG variable to point to the appropriate cluster.
+
+When `make provider` completes, you call the following commands, this will allow you to get check if the provider and operator pods are up.
+```
+$ oc get provider.aws
+NAME           REGION      AGE
+aws-provider   us-east-2   XdXXh
+$ oc get pods -n crossplane-system
+NAME                                          READY   STATUS      RESTARTS   AGE
+crossplane-xxxxxxxxx-xxxxx                    1/1     Running     0          XdXXh
+crossplane-package-manager-xxxxxxxxxx-xxxxx   1/1     Running     0          XdXXh
+provider-aws-controller-xxxxxxxxxx-xxxxx      1/1     Running     0          XdXXh
+```
+
+If all three pods are up and running, then Crossplane and the AWS Provider are setup, if the provider pod is missing, check the [Known Issues](#known-issues) section
+
 ## Running Quay
 
 In order to get Quay up and running you will need to run `make quay`. This will create the compositions, requirements, and QuayEcosystem CR. You can validate this is working by looking at the AWS console where you will see that Redis, S3 and Postgres are being launched. If you do not see any of these, refer to [Known Issues](##Known-Issues).
 
 Once all the dependencies have been created, the script will create the Quay Operator. After this point you can refer to the steps from the offical [Quay Operator docs](https://access.redhat.com/documentation/en-us/red_hat_quay/3.3/html/deploy_red_hat_quay_on_openshift_with_quay_operator/deploying_red_hat_quay#deploy_a_red_hat_quay_ecosystem).
 
-TL;DR - You will see the pods come up in the default name space, once the quay-config and quay-pods are up, you can navigate to the Networking section in the left navbar and find the Route/URL for the Quay instance.
+### Verifying Dependency Status
+
+Similar to the previous, ensure you have a second shell up before running `make quay`. The setup scripts will first create each of the compositions, these are the abstractions which wrap the cloud infrastructure resources. After this, each requirement will be created, and the script will block until they are finish. In your 2nd shell, you can validate this behaviour:
+
+```
+$ oc get s3bucket
+NAME                     READY   SYNCED   PREDEFINED-ACL   LOCAL-PERMISSION   AGE
+s3buckettestquayredhat   True    True     private          ReadWrite          20s
+$ oc get rdsinstance
+NAME                READY   SYNCED   STATE       ENGINE     VERSION   AGE
+my-db-x8jvx-glclx   False   False    creating    postgres   9.6       26s
+$ oc get replicationgroup
+NAME                   READY   SYNCED   STATE      VERSION   AGE
+my-redis-m6lw6-zpk8v   False   True     creating   5.0.6     38s
+```
+
+Typically the S3 Bucket will finish completing first, followed by the Redis Cluster (replicationgroup) and then the Postgres Instance (rdsinstance). There is a slight delay between the creation of each resource and when the script signifies the resource is complete, this is because Crossplane takes a few seconds longer to create and propogate the secret.
+
+Each resource will populate a secret in the target namespace, the contents of each secret contains the information necessary for the Quay Operator to connect and use the resource. 
+
+```
+$ oc get secrets -n $NAMESPACE
+bucket-conn           connection.crossplane.io/v1alpha1     3      XmXXs
+db-conn               connection.crossplane.io/v1alpha1     6      XmXXs
+redis-conn            connection.crossplane.io/v1alpha1     2      XmXXs
+```
+
+At this point all the dependencies have been created, and the Makefile will begin to create the Quay Operator, and the `QuayEcosystem` resource. The Operator is typically created fairly quickly, it is easiest to validate from the Openshift interface.
+
+First the operator will come up, followed by the `quay-config` pod and then the `quay` pod.
+
+![pods](https://github.com/krishchow/crossplane-quay/blob/master/imgs/pods.png?raw=true)
+
+Next, we can see the different routes in Openshift.
+
+![routes](https://github.com/krishchow/crossplane-quay/blob/master/imgs/routes.png?raw=true)
+
+By going to the endpoint listed in the route, we can access the Quay instance.
+
+![quay](https://github.com/krishchow/crossplane-quay/blob/master/imgs/quay.png?raw=true)
+
+TL;DR - You will see the pods come up in the target name space, once the quay-config and quay-pods are up, you can navigate to the Networking section in the left navbar and find the Route/URL for the Quay instance.
 
 ## Clean Up
 

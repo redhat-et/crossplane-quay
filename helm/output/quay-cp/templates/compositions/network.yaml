@@ -7,7 +7,7 @@ metadata:
   labels:
     provider: aws
     guide: quickstart
-    vpc: vpc-009b237d62ab5e6c4
+    vpc: vpc-018e47e3707b5ac8d
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   reclaimPolicy: Delete
@@ -29,7 +29,7 @@ spec:
           forProvider:
             cidrBlock: 10.0.99.0/24
             
-            vpcId: vpc-009b237d62ab5e6c4
+            vpcId: vpc-018e47e3707b5ac8d
             
             availabilityZone: us-east-2a
           providerRef:
@@ -47,7 +47,7 @@ spec:
           forProvider:
             cidrBlock: 10.0.100.0/24
             
-            vpcId: vpc-009b237d62ab5e6c4
+            vpcId: vpc-018e47e3707b5ac8d
             
             availabilityZone: us-east-2b
           providerRef:
@@ -65,7 +65,7 @@ spec:
           forProvider:
             cidrBlock: 10.0.101.0/24
             
-            vpcId: vpc-009b237d62ab5e6c4
+            vpcId: vpc-018e47e3707b5ac8d
             
             availabilityZone: us-east-2c
           providerRef:
@@ -79,12 +79,12 @@ spec:
         spec:
           forProvider:
             
-            vpcId: vpc-009b237d62ab5e6c4
+            vpcId: vpc-018e47e3707b5ac8d
             
             routes:
               - destinationCidrBlock: 0.0.0.0/0
                 
-                gatewayId: igw-0a1a3844839765448
+                gatewayId: igw-08b41c3d4b340ec25
                 
             associations:
               - subnetIdSelector:
@@ -112,7 +112,7 @@ spec:
         spec:
           forProvider:
             
-            vpcId: vpc-009b237d62ab5e6c4
+            vpcId: vpc-018e47e3707b5ac8d
             
             groupName: crossplane-quay
             description: Allow access to Quay dependencies

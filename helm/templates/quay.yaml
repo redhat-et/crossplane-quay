@@ -53,5 +53,7 @@ spec:
         s3:
           bucketName: {{ .Values.bucketName | quote }}
           host: {{ printf "s3.%s.amazonaws.com" .Values.region | quote }} 
+  {{ if .Values.externalCache }}
   redis:
     credentialsSecretName: {{ .Values.redisSecret | quote }}
+  {{ end }}

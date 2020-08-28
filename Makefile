@@ -36,5 +36,7 @@ clean: clean-quay clean-dependencies
 clean-crossplane:
 	./force_clean.sh
 
-clean-all: clean-quay
+clean-all:
+	oc delete -f helm/output/quay-cp/templates/quay.yaml
+	./quay/teardown_quay.sh
 	./force_clean.sh

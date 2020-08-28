@@ -16,3 +16,8 @@ echo "Waiting for CR - redis"
 until oc get crd redisclusterrequirements.cache.example.org
 do sleep 1
 done
+
+echo "Waiting for CR - network"
+until oc get crd networkgrouprequirements.ec2.example.org
+do sleep 1
+done

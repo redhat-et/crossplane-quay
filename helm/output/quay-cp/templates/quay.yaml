@@ -56,5 +56,6 @@ spec:
         s3:
           bucketName: "s3buckettestquayredhat"
           host: "s3.us-east-2.amazonaws.com" 
+  
   redis:
     credentialsSecretName: "redis-conn"

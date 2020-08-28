@@ -72,7 +72,7 @@ my-redis-m6lw6-zpk8v   False   True     creating   5.0.6     38s
 
 Typically the S3 Bucket will finish completing first, followed by the Redis Cluster (replicationgroup) and then the Postgres Instance (rdsinstance). There is a slight delay between the creation of each resource and when the script signifies the resource is complete, this is because Crossplane takes a few seconds longer to create and propogate the secret.
 
-Each resource will populate a secret in the target namespace, the contents of each secret contains the information necessary for the Quay Operator to connect and use the resource. 
+Each resource will populate a secret in the target namespace, the contents of each secret contains the information necessary for the Quay Operator to connect and use the resource.
 
 ```
 $ oc get secrets -n $NAMESPACE
@@ -108,6 +108,8 @@ Currently it seems like there is an issue with deploying the AWS provider. The d
 An issue has been opened on the upstream [provider-aws](https://github.com/crossplane/provider-aws/issues/316).
 
 In order to delete the dependencies, you will need to empty the S3 Bucket manually via the AWS console. You cannot delete a bucket that has objects in it, so Crossplane will not be able to delete that CR or Bucket. It does not seem like there is a simple work around for this issue.
+
+If the health check probe for the quay pod fails, then it is likely that the cluster isn't powerful enough to support the Quay instance. It is reccomended that you clean up the current cluster and try again with a more powerful cluster. For example, CRCs and Minikube/Kind will often not be powerful enough.
 
 ## Future Work
 

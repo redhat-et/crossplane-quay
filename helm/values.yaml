@@ -1,4 +1,4 @@
-bucketName: 's3buckettestquayredhat'
+bucketName: 'quay.demo.octo.redhat.com'
 namespace: default
 
 s3Secret: 'bucket-conn'
@@ -7,8 +7,8 @@ postgresSecret: 'db-conn'
 pullSecret: 'redhat-quay-pull-secret'
 
 region: 'us-east-1'
-vpcId: 'vpc-08d6ad4633acf9678'
-igwId: 'igw-06abd495e3dcf1f83'
+vpcId: 'vpc-xxxxxxxxxxxxxxxxx'
+igwId: 'igw-xxxxxxxxxxxxxxxxx'
 aZCIDRa: '10.0.99.0/24'
 aZCIDRb: '10.0.100.0/24'
 aZCIDRc: '10.0.101.0/24'

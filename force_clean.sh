@@ -19,3 +19,4 @@ oc delete namespace crossplane-system
 # oc crossplane package uninstall --cluster --namespace crossplane-system ${NAME}
 # oc get crds -o name | grep oam | xargs oc delete 
 # kind delete cluster
+

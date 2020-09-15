@@ -4,6 +4,8 @@ source variables.env
 
 cd $(dirname $0)
 
+oc apply -f helm/output/quay-cp/templates/network_requirement.yaml
+sleep 5
 oc apply -f helm/output/quay-cp/templates/requirements.yaml
 
 seconds=0

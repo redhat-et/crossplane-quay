@@ -25,6 +25,7 @@ clean-compositions:
 	oc delete -f helm/output/quay-cp/templates/compositions
 
 clean-dependencies:
+	oc delete -f helm/output/quay-cp/templates/network_requirement.yaml
 	oc delete -f helm/output/quay-cp/templates/requirements.yaml
 
 clean-quay:

@@ -1,6 +1,6 @@
 ---
 apiVersion: apiextensions.crossplane.io/v1alpha1
-kind: InfrastructureDefinition
+kind: CompositeResourceDefinition
 metadata:
   name: postgresqlinstances.database.example.org
 spec:
@@ -37,14 +37,6 @@ spec:
               - parameters
 ---
 apiVersion: apiextensions.crossplane.io/v1alpha1
-kind: InfrastructurePublication
-metadata:
-  name: postgresqlinstances.database.example.org
-spec:
-  infrastructureDefinitionRef:
-    name: postgresqlinstances.database.example.org
----
-apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: Composition
 metadata:
   name: vpcpostgresqlinstances.aws.database.example.org
@@ -55,10 +47,10 @@ metadata:
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   reclaimPolicy: Delete
-  from:
+  compositeTypeRef:
     apiVersion: database.example.org/v1alpha1
     kind: PostgreSQLInstance
-  to:
+  resources:
     - base:
         apiVersion: database.aws.crossplane.io/v1beta1
         kind: DBSubnetGroup
@@ -70,7 +62,7 @@ spec:
             subnetIdSelector:
               matchLabels:
                 desc: quay
-          providerRef:
+          providerConfigRef:
             name: aws-provider
           reclaimPolicy: Delete
     - base:
@@ -94,7 +86,7 @@ spec:
           writeConnectionSecretToRef:
             namespace: crossplane-system
             name: postgres-secret-internal
-          providerRef:
+          providerConfigRef:
             name: aws-provider
           reclaimPolicy: Delete
       patches:

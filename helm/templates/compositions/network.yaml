@@ -1,6 +1,6 @@
 ---
 apiVersion: apiextensions.crossplane.io/v1alpha1
-kind: InfrastructureDefinition
+kind: CompositeResourceDefinition
 metadata:
   name: networkgroups.ec2.example.org
 spec:
@@ -20,14 +20,6 @@ spec:
             type: object
 ---
 apiVersion: apiextensions.crossplane.io/v1alpha1
-kind: InfrastructurePublication
-metadata:
-  name: networkgroups.ec2.example.org
-spec:
-  infrastructureDefinitionRef:
-    name: networkgroups.ec2.example.org
----
-apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: Composition
 metadata:
   name: vpcnetworkgroups.aws.ec2.example.org
@@ -38,10 +30,10 @@ metadata:
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   reclaimPolicy: Delete
-  from:
+  compositeTypeRef:
     apiVersion: ec2.example.org/v1alpha1
     kind: NetworkGroup
-  to:
+  resources:
     {{ if not .Values.vpcId }}
     - base:
         apiVersion: ec2.aws.crossplane.io/v1beta1
@@ -55,7 +47,7 @@ spec:
             cidrBlock: 10.0.0.0/16
             enableDnsHostNames: true
             enableDnsSupport: true
-          providerRef:
+          providerConfigRef:
             name: aws-provider
           reclaimPolicy: Delete
     {{ end }}
@@ -76,7 +68,7 @@ spec:
               matchLabels:
                 desc: quay
             {{ end }}
-          providerRef:
+          providerConfigRef:
             name: aws-provider
           reclaimPolicy: Delete
     {{ end }}
@@ -99,7 +91,7 @@ spec:
                 desc: quay
             {{ end }}
             availabilityZone: {{ printf "%sa" .Values.region }}
-          providerRef:
+          providerConfigRef:
             name: aws-provider
           reclaimPolicy: Delete
     - base:
@@ -121,7 +113,7 @@ spec:
                 desc: quay
             {{ end }}
             availabilityZone: {{ printf "%sb" .Values.region }}
-          providerRef:
+          providerConfigRef:
             name: aws-provider
           reclaimPolicy: Delete
     - base:
@@ -143,7 +135,7 @@ spec:
                 desc: quay
             {{ end }}
             availabilityZone: {{ printf "%sc" .Values.region }}
-          providerRef:
+          providerConfigRef:
             name: aws-provider
           reclaimPolicy: Delete
     - base:
@@ -182,7 +174,7 @@ spec:
                   matchLabels:
                     desc: quay
                     zone: {{ printf "%sc" .Values.region }}
-          providerRef:
+          providerConfigRef:
             name: aws-provider
           reclaimPolicy: Delete
     - base:
@@ -229,6 +221,6 @@ spec:
               ipRanges:
               - cidrIp: 0.0.0.0/0
                 description: Everywhere
-          providerRef:
+          providerConfigRef:
             name: aws-provider
           reclaimPolicy: Delete

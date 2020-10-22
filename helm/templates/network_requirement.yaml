@@ -1,5 +1,5 @@
 apiVersion: ec2.example.org/v1alpha1
-kind: NetworkGroupRequirement
+kind: NetworkGroup
 metadata:
   name: my-network
   namespace: {{ .Values.namespace | default "default" | quote }}

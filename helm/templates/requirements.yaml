@@ -1,5 +1,5 @@
 apiVersion: storage.example.org/v1alpha1
-kind: BucketRequirement
+kind: Bucket
 metadata:
   name: {{ .Values.bucketName }}
   namespace: {{ .Values.namespace | default "default" | quote }}
@@ -15,7 +15,7 @@ spec:
 {{ if .Values.externalCache }}
 ---
 apiVersion: cache.example.org/v1alpha1
-kind: RedisClusterRequirement
+kind: RedisCluster
 metadata:
   name: my-redis
   namespace: {{ .Values.namespace | default "default" | quote }}
@@ -25,11 +25,11 @@ spec:
       provider: aws
   writeConnectionSecretToRef:
     name: {{ .Values.redisSecret }}
-  namespace: {{ .Values.namespace | default "default" | quote }}
+    namespace: {{ .Values.namespace | default "default" | quote }}
 {{ end }}
 ---
 apiVersion: database.example.org/v1alpha1
-kind: PostgreSQLInstanceRequirement
+kind: PostgreSQLInstance
 metadata:
   name: my-db
   namespace: {{ .Values.namespace | default "default" | quote }}

@@ -1,4 +1,5 @@
 bucketName: 'quay.demo.octo.redhat.com'
+userName: 'quayDemoUser'
 namespace: default
 
 s3Secret: 'bucket-conn'

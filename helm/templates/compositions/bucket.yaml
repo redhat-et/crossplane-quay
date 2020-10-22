@@ -1,6 +1,6 @@
 ---
 apiVersion: apiextensions.crossplane.io/v1alpha1
-kind: InfrastructureDefinition
+kind: CompositeResourceDefinition
 metadata:
   name: buckets.storage.example.org
 spec:
@@ -35,14 +35,6 @@ spec:
               - parameters
 ---
 apiVersion: apiextensions.crossplane.io/v1alpha1
-kind: InfrastructurePublication
-metadata:
-  name: buckets.storage.example.org
-spec:
-  infrastructureDefinitionRef:
-    name: buckets.storage.example.org
----
-apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: Composition
 metadata:
   name: buckets.aws.storage.example.org
@@ -52,25 +44,39 @@ metadata:
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   reclaimPolicy: Delete
-  from:
+  compositeTypeRef:
     apiVersion: storage.example.org/v1alpha1
     kind: Bucket
-  to:
+  resources:
     - base:
-        apiVersion: storage.aws.crossplane.io/v1alpha3
-        kind: S3Bucket
+        apiVersion: identity.aws.crossplane.io/v1alpha1
+        kind: IAMUser
+        metadata:
+          name:  {{ .Values.userName | default "quayDemoUser" | quote }}
+          namespace: {{ .Values.namespace | default "default" | quote }}
+        spec:
+          forProvider:
+            tags:
+              - key: test
+                value: key
+          providerConfigRef:
+            name: aws-provider
+          deletionPolicy: Delete
+    - base:
+        apiVersion: s3.aws.crossplane.io/v1beta1
+        kind: Bucket
         metadata:
           namespace: {{ .Values.namespace | default "default" | quote }}
         spec:
-          localPermission: ReadWrite
-          region: {{ .Values.region }}
-          cannedACL: private
+          forProvider:
+            locationConstraint: {{ .Values.region }}
+            acl: private
           writeConnectionSecretToRef: 
             namespace: crossplane-system
             name: bucket-internal-secret
-          providerRef:
+          providerConfigRef:
             name: aws-provider
-          reclaimPolicy: Delete
+          deletionPolicy: Delete
       patches:
         - fromFieldPath: "metadata.uid"
           toFieldPath: "spec.writeConnectionSecretToRef.name"
@@ -88,8 +94,8 @@ spec:
         - name: secretKey
           fromConnectionSecretKey: password
     - base:
-        apiVersion: storage.aws.crossplane.io/v1alpha1
-        kind: S3BucketPolicy
+        apiVersion: s3.aws.crossplane.io/v1alpha1
+        kind: BucketPolicy
         metadata:
           namespace: {{ .Values.namespace | default "default" | quote }}
           name: bucketPolicy
@@ -126,5 +132,5 @@ spec:
             version: '2012-10-17'
             name: aws-provider
           reclaimPolicy: Delete
-          providerRef:
+          providerConfigRef:
             name: aws-provider

@@ -1,6 +1,6 @@
 ---
 apiVersion: apiextensions.crossplane.io/v1alpha1
-kind: InfrastructureDefinition
+kind: CompositeResourceDefinition
 metadata:
   name: redisclusters.cache.example.org
 spec:
@@ -23,14 +23,6 @@ spec:
             type: object
 ---
 apiVersion: apiextensions.crossplane.io/v1alpha1
-kind: InfrastructurePublication
-metadata:
-  name: redisclusters.cache.example.org
-spec:
-  infrastructureDefinitionRef:
-    name: redisclusters.cache.example.org
----
-apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: Composition
 metadata:
   name: vpcredisclusters.aws.cache.example.org
@@ -41,10 +33,10 @@ metadata:
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   reclaimPolicy: Delete
-  from:
+  compositeTypeRef:
     apiVersion: cache.example.org/v1alpha1
     kind: RedisCluster
-  to:
+  resources:
     - base:
         apiVersion: cache.aws.crossplane.io/v1alpha1
         kind: CacheSubnetGroup
@@ -56,7 +48,7 @@ spec:
             subnetIdSelector:
               matchLabels:
                 desc: quay
-          providerRef:
+          providerConfigRef:
             name: aws-provider
           reclaimPolicy: Delete
     - base:
@@ -78,7 +70,7 @@ spec:
           writeConnectionSecretToRef:
             namespace: crossplane-system
             name: redis-internal-secret
-          providerRef:
+          providerConfigRef:
             name: aws-provider
           reclaimPolicy: Delete
       connectionDetails:

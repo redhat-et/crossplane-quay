@@ -1,0 +1,185 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: Composition
+metadata:
+  name: vpcnetworkgroups.aws.ec2.example.org
+  labels:
+    provider: aws
+    guide: quickstart
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  reclaimPolicy: Delete
+  compositeTypeRef:
+    apiVersion: ec2.example.org/v1alpha1
+    kind: NetworkGroup
+  resources:
+    - base:
+        apiVersion: ec2.aws.crossplane.io/v1beta1
+        kind: Subnet
+        metadata:
+          labels:
+            desc: quay
+        spec:
+          forProvider: {}
+          providerConfigRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+      patches:
+      - fromFieldPath: spec.vpcId
+        toFieldPath: spec.forProvider.vpcId 
+      - fromFieldPath: spec.aZCIDRa
+        toFieldPath: spec.forProvider.cidrBlock
+      - fromFieldPath: spec.region
+        toFieldPath: spec.forProvider.availabilityZone
+        transforms:
+        - type: string
+          string:
+            fmt: "%sa"
+      - fromFieldPath: spec.region
+        toFieldPath: metadata.labels.zone
+        transforms:
+        - type: string
+          string:
+            fmt: "%sc"
+    - base:
+        apiVersion: ec2.aws.crossplane.io/v1beta1
+        kind: Subnet
+        metadata:
+          labels:
+            desc: quay
+        spec:
+          forProvider: {}
+          providerConfigRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+      patches:
+      - fromFieldPath: spec.vpcId
+        toFieldPath: spec.forProvider.vpcId 
+      - fromFieldPath: spec.aZCIDRb
+        toFieldPath: spec.forProvider.cidrBlock
+      - fromFieldPath: spec.region
+        toFieldPath: spec.forProvider.availabilityZone
+        transforms:
+        - type: string
+          string:
+            fmt: "%sb"
+      - fromFieldPath: spec.region
+        toFieldPath: metadata.labels.zone
+        transforms:
+        - type: string
+          string:
+            fmt: "%sc"
+    - base:
+        apiVersion: ec2.aws.crossplane.io/v1beta1
+        kind: Subnet
+        metadata:
+          labels:
+            desc: quay
+        spec:
+          forProvider: {}
+          providerConfigRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+      patches:
+      - fromFieldPath: spec.vpcId
+        toFieldPath: spec.forProvider.vpcId 
+      - fromFieldPath: spec.aZCIDRc
+        toFieldPath: spec.forProvider.cidrBlock
+      - fromFieldPath: spec.region
+        toFieldPath: spec.forProvider.availabilityZone
+        transforms:
+        - type: string
+          string:
+            fmt: "%sc"
+      - fromFieldPath: spec.region
+        toFieldPath: metadata.labels.zone
+        transforms:
+        - type: string
+          string:
+            fmt: "%sc"
+    - base:
+        apiVersion: ec2.aws.crossplane.io/v1alpha4
+        kind: RouteTable
+        metadata: {}
+        spec:
+          forProvider:
+            routes:
+              - destinationCidrBlock: 0.0.0.0/0
+                gatewayId: igw-xxxxxxxxxxxxxxxxx
+            associations:
+              - subnetIdSelector:
+                  matchLabels:
+                    desc: quay
+              - subnetIdSelector:
+                  matchLabels:
+                    desc: quay
+              - subnetIdSelector:
+                  matchLabels:
+                    desc: quay
+          providerConfigRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+      patches:
+      - fromFieldPath: spec.vpcId
+        toFieldPath: spec.forProvider.vpcId 
+      - fromFieldPath: spec.igwId
+        toFieldPath: spec.routes[0].gatewayId
+      - fromFieldPath: spec.region
+        toFieldPath: spec.forProvider.associations[0].subnetIdSelector.matchLabels.zone
+        transforms:
+        - type: string
+          string:
+            fmt: "%sa"
+      - fromFieldPath: spec.region
+        toFieldPath: spec.forProvider.associations[1].subnetIdSelector.matchLabels.zone
+        transforms:
+        - type: string
+          string:
+            fmt: "%sb"
+      - fromFieldPath: spec.region
+        toFieldPath: spec.forProvider.associations[2].subnetIdSelector.matchLabels.zone
+        transforms:
+        - type: string
+          string:
+            fmt: "%sc"
+    - base:
+        apiVersion: ec2.aws.crossplane.io/v1beta1
+        kind: SecurityGroup
+        metadata:
+          labels:
+            desc: quay
+        spec:
+          forProvider:
+            groupName: crossplane-quay
+            description: Allow access to Quay dependencies
+            ingress:
+            - fromPort: 6379
+              toPort: 6379
+              ipProtocol: tcp
+              ipRanges:
+              - cidrIp: 0.0.0.0/0
+                description: Everywhere
+            - fromPort: 5432
+              toPort: 5432
+              ipProtocol: tcp
+              ipRanges:
+              - cidrIp: 0.0.0.0/0
+                description: Everywhere
+            egress:
+            - fromPort: 6379
+              toPort: 6379
+              ipProtocol: tcp
+              ipRanges:
+              - cidrIp: 0.0.0.0/0
+                description: Everywhere
+            - fromPort: 5432
+              toPort: 5432
+              ipProtocol: tcp
+              ipRanges:
+              - cidrIp: 0.0.0.0/0
+                description: Everywhere
+          providerConfigRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+      patches:
+      - fromFieldPath: spec.vpcId
+        toFieldPath: spec.forProvider.vpcId 

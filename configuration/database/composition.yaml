@@ -1,0 +1,70 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: Composition
+metadata:
+  name: vpcpostgresqlinstances.aws.database.example.org
+  labels:
+    provider: aws
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  reclaimPolicy: Delete
+  compositeTypeRef:
+    apiVersion: database.example.org/v1alpha1
+    kind: PostgreSQLInstance
+  resources:
+    - base:
+        apiVersion: database.aws.crossplane.io/v1beta1
+        kind: DBSubnetGroup
+        metadata: {}
+        spec:
+          forProvider:
+            description: An excellent formation of subnetworks.
+            subnetIdSelector:
+              matchLabels:
+                desc: quay
+          providerConfigRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+    - base:
+        apiVersion: database.aws.crossplane.io/v1beta1
+        kind: RDSInstance
+        metadata: {}
+        spec:
+          forProvider:
+            dbSubnetGroupNameSelector:
+              matchControllerRef: true
+            vpcSecurityGroupIDSelector:
+              matchLabels:
+                desc: quay
+            dbInstanceClass: db.t2.small
+            masterUsername: masteruser
+            engine: postgres
+            engineVersion: "9.6"
+            skipFinalSnapshotBeforeDeletion: true
+            publiclyAccessible: true
+          writeConnectionSecretToRef:
+            namespace: crossplane-system
+            name: postgres-secret-internal
+          providerConfigRef:
+            name: aws-provider
+          reclaimPolicy: Delete
+      patches:
+        - fromFieldPath: "metadata.uid"
+          toFieldPath: "spec.writeConnectionSecretToRef.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-postgresql"
+        - fromFieldPath: "spec.storageGB"
+          toFieldPath: "spec.forProvider.allocatedStorage"
+      connectionDetails:
+        - name: database-username
+          fromConnectionSecretKey: username
+        - name: database-password
+          fromConnectionSecretKey: password
+        - name: database-root-password
+          value: postgrestest
+        - name: database-name
+          value: postgres
+        - name: database-server
+          fromConnectionSecretKey: endpoint
+        - fromConnectionSecretKey: port

@@ -1,0 +1,22 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: CompositeResourceDefinition
+metadata:
+  name: redisclusters.cache.example.org
+spec:
+  connectionSecretKeys:
+    - hostname
+    - port
+  crdSpecTemplate:
+    group: cache.example.org
+    version: v1alpha1
+    names:
+      kind: RedisCluster
+      listKind: RedisClusterList
+      plural: redisclusters
+      singular: rediscluster
+    validation:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object

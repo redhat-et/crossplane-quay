@@ -1,0 +1,35 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: CompositeResourceDefinition
+metadata:
+  name: buckets.storage.example.org
+spec:
+  connectionSecretKeys:
+    - host
+    - secretKey
+    - accessKey
+    - bucketName
+  crdSpecTemplate:
+    group: storage.example.org
+    version: v1alpha1
+    names:
+      kind: Bucket
+      listKind: BucketList
+      plural: buckets
+      singular: bucket
+    validation:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              bucketName:
+                type: string
+              userName:
+                type: string
+              region:
+                type: string
+            required:
+              - bucketName
+              - userName
+              - region

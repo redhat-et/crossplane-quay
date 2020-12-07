@@ -8,28 +8,30 @@ spec:
     - secretKey
     - accessKey
     - bucketName
-  crdSpecTemplate:
-    group: storage.example.org
-    version: v1alpha1
-    names:
-      kind: Bucket
-      listKind: BucketList
-      plural: buckets
-      singular: bucket
-    validation:
-      openAPIV3Schema:
-        type: object
-        properties:
-          spec:
-            type: object
-            properties:
-              bucketName:
-                type: string
-              userName:
-                type: string
-              region:
-                type: string
-            required:
-              - bucketName
-              - userName
-              - region
+  group: storage.example.org
+  names:
+    kind: Bucket
+    listKind: BucketList
+    plural: buckets
+    singular: bucket
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                bucketName:
+                  type: string
+                userName:
+                  type: string
+                region:
+                  type: string
+              required:
+                - bucketName
+                - userName
+                - region

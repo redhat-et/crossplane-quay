@@ -10,23 +10,25 @@ spec:
     - database-name
     - database-server
     - port
-  crdSpecTemplate:
-    group: database.example.org
-    version: v1alpha1
-    names:
-      kind: PostgreSQLInstance
-      listKind: PostgreSQLInstanceList
-      plural: postgresqlinstances
-      singular: postgresqlinstance
-    validation:
-      openAPIV3Schema:
-        type: object
-        properties:
-          spec:
-            type: object
-            properties:
-              storageGB:
-                type: integer
-            required:
-              - vpcId
-              - storageGB
+  group: database.example.org
+  names:
+    kind: PostgreSQLInstance
+    listKind: PostgreSQLInstanceList
+    plural: postgresqlinstances
+    singular: postgresqlinstance
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                storageGB:
+                  type: integer
+              required:
+                - vpcId
+                - storageGB

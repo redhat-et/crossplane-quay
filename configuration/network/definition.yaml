@@ -3,37 +3,39 @@ kind: CompositeResourceDefinition
 metadata:
   name: networkgroups.ec2.example.org
 spec:
-  crdSpecTemplate:
-    group: ec2.example.org
-    version: v1alpha1
-    names:
-      kind: NetworkGroup
-      listKind: NetworkGroupList
-      plural: networkgroups
-      singular: networkgroup
-    validation:
-      openAPIV3Schema:
-        type: object
-        properties:
-          spec:
-            type: object
-            properties:
-              vpcId:
-                type: string
-              igwId:
-                type: string
-              aZCIDRa:
-                type: string
-              aZCIDRb:
-                type: string
-              aZCIDRc:
-                type: string
-              region:
-                type: string
-            required:
-              - vpcId
-              - region
-              - aZCIDRa
-              - aZCIDRb
-              - aZCIDRc
-              - igwId
+  group: ec2.example.org
+  names:
+    kind: NetworkGroup
+    listKind: NetworkGroupList
+    plural: networkgroups
+    singular: networkgroup
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                vpcId:
+                  type: string
+                igwId:
+                  type: string
+                aZCIDRa:
+                  type: string
+                aZCIDRb:
+                  type: string
+                aZCIDRc:
+                  type: string
+                region:
+                  type: string
+              required:
+                - vpcId
+                - region
+                - aZCIDRa
+                - aZCIDRb
+                - aZCIDRc
+                - igwId

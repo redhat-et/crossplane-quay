@@ -4,10 +4,9 @@ metadata:
   name: buckets.storage.example.org
 spec:
   connectionSecretKeys:
-    - host
     - secretKey
     - accessKey
-    - bucketName
+    - host
   group: storage.example.org
   names:
     kind: Bucket

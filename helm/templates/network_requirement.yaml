@@ -1,9 +1,0 @@
-apiVersion: ec2.example.org/v1alpha1
-kind: NetworkGroup
-metadata:
-  name: my-network
-  namespace: {{ .Values.namespace | default "default" | quote }}
-spec:
-  compositionSelector:
-    matchLabels:
-      provider: aws

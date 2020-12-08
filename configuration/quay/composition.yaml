@@ -1,0 +1,147 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: Composition
+metadata:
+  name: components.quay.example.org
+  labels:
+    provider: aws
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  reclaimPolicy: Delete
+  compositeTypeRef:
+    apiVersion: quay.example.org/v1alpha1
+    kind: Component
+  resources:
+    - base:
+        apiVersion: ec2.example.org/v1alpha1
+        kind: NetworkGroup
+        metadata:
+          name: my-network
+        spec:
+          compositionSelector:
+            matchLabels:
+              provider: aws
+      patches:
+        - fromFieldPath: spec.vpcId
+          toFieldPath: spec.vpcId
+        - fromFieldPath: spec.igwId
+          toFieldPath: spec.igwId
+        - fromFieldPath: spec.region
+          toFieldPath: spec.region
+        - fromFieldPath: spec.aZCIDRa
+          toFieldPath: spec.aZCIDRa
+        - fromFieldPath: spec.aZCIDRb
+          toFieldPath: spec.aZCIDRb
+        - fromFieldPath: spec.aZCIDRc
+          toFieldPath: spec.aZCIDRc
+        - fromFieldPath: spec.namespace
+          toFieldPath: metadata.namespace
+    - base:
+        apiVersion: storage.example.org/v1alpha1
+        kind: Bucket
+        metadata: {}
+        spec:
+          compositionSelector:
+            matchLabels:
+              provider: aws
+          writeConnectionSecretToRef: {}
+      patches:
+        - fromFieldPath: spec.region
+          toFieldPath: spec.region
+        - fromFieldPath: spec.bucketName
+          toFieldPath: metadata.name
+        - fromFieldPath: spec.bucketName
+          toFieldPath: spec.bucketName
+        - fromFieldPath: spec.userName
+          toFieldPath: spec.userName
+        - fromFieldPath: spec.namespace
+          toFieldPath: metadata.namespace
+        - fromFieldPath: spec.namespace
+          toFieldPath: spec.writeConnectionSecretToRef.namespace
+        - fromFieldPath: spec.bucketSecret
+          toFieldPath: spec.writeConnectionSecretToRef.name
+    - base:
+        apiVersion: cache.example.org/v1alpha1
+        kind: RedisCluster
+        metadata:
+          name: my-redis
+        spec:
+          compositionSelector:
+            matchLabels:
+              provider: aws
+          writeConnectionSecretToRef: {}
+      patches:
+        - fromFieldPath: spec.region
+          toFieldPath: spec.region
+        - fromFieldPath: spec.namespace
+          toFieldPath: metadata.namespace
+        - fromFieldPath: spec.namespace
+          toFieldPath: spec.writeConnectionSecretToRef.namespace
+        - fromFieldPath: spec.redisSecret
+          toFieldPath: spec.writeConnectionSecretToRef.name
+    - base:
+        apiVersion: database.example.org/v1alpha1
+        kind: PostgreSQLInstance
+        metadata:
+          name: my-db
+        spec:
+          compositionSelector:
+            matchLabels:
+              provider: aws
+          writeConnectionSecretToRef: {}
+      patches:
+        - fromFieldPath: spec.region
+          toFieldPath: spec.region
+        - fromFieldPath: spec.storageGB
+          toFieldPath: spec.storageGB
+        - fromFieldPath: spec.namespace
+          toFieldPath: metadata.namespace
+        - fromFieldPath: spec.namespace
+          toFieldPath: spec.writeConnectionSecretToRef.namespace
+        - fromFieldPath: spec.dbSecret
+          toFieldPath: spec.writeConnectionSecretToRef.name
+    - base:
+        apiVersion: operator.in-cluster.crossplane.io/v1alpha1
+        kind: Operator
+        metadata:
+          name: my-project-quay
+          namespace: default
+        spec:
+          forProvider:
+            channel: stable
+            operatorName: rh-quay-operator
+            catalogSource: krishchow-catalog-source
+            catalogSourceNamespace: openshift-marketplace
+    - base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        metadata:
+          name: quay-release
+        spec:
+          rollbackLimit: 10
+          forProvider:
+            chart:
+              name: quay-cp
+              repository: https://krishchow.github.io/quay-chart
+            namespace: default
+            values: {}
+          providerConfigRef:
+            name: helm-provider
+      patches:
+        - fromFieldPath: spec.chartVersion
+          toFieldPath: spec.forProvider.chart.version
+        - fromFieldPath: spec.region
+          toFieldPath: spec.forProvider.values.region
+        - fromFieldPath: spec.namespace
+          toFieldPath: spec.forProvider.values.namespace
+        - fromFieldPath: spec.namespace
+          toFieldPath: spec.forProvider.namespace
+        - fromFieldPath: spec.bucketSecret
+          toFieldPath: spec.forProvider.values.s3Secret
+        - fromFieldPath: spec.redisSecret
+          toFieldPath: spec.forProvider.values.redisSecret
+        - fromFieldPath: spec.dbSecret
+          toFieldPath: spec.forProvider.values.postgresSecret
+        - fromFieldPath: spec.bucketName
+          toFieldPath: spec.forProvider.values.bucketName
+        - fromFieldPath: spec.pullSecret
+          toFieldPath: spec.forProvider.values.pullSecret

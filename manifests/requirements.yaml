@@ -1,0 +1,25 @@
+# Source: quay-cp/templates/requirements.yaml
+apiVersion: quay.example.org/v1alpha1
+kind: Component
+metadata:
+  name: my-quay
+  namespace: "default"
+spec:
+  region: us-east-2
+  storageGB: 10
+  namespace: default
+  aZCIDRa: 10.0.99.0/24
+  aZCIDRb: 10.0.100.0/24
+  aZCIDRc: 10.0.101.0/24
+  vpcId: vpc-0837bd0bcf10c04cb
+  igwId: igw-057e77864fe7a5fd8
+  dbSecret: db-conn
+  redisSecret: redis-conn
+  bucketSecret: bucket-conn
+  bucketName: quaydemooctoredhat
+  userName: quaydemouser
+  pullSecret: redhat-quay-pull-secret
+  chartVersion: 0.1.6
+  compositionSelector:
+    matchLabels:
+      provider: aws

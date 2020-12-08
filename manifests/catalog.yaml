@@ -1,0 +1,39 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: krishchow-catalog-source
+  namespace: openshift-marketplace
+spec:
+  displayName: krishchow-catalog-source
+  image: 'quay.io/krishchow/operator-registry:0.4'
+  imagePullPolicy: always
+  publisher: krishchow
+  sourceType: grpc
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: in-cluster-sa
+rules:
+- apiGroups: ["packages.operators.coreos.com"]
+  resources: ["packagemanifests"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["operators.coreos.com"]
+  resources: ["clusterserviceversions"]
+  verbs: ["get", "list", "watch", "delete"]
+- apiGroups: ["operators.coreos.com"]
+  resources: ["subscriptions"]
+  verbs: ["get", "list", "watch", "delete", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: in-cluster-sa
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: in-cluster-sa
+subjects:
+- kind: ServiceAccount
+  name: provider-in-cluster-8dd76925e197
+  namespace: crossplane-system

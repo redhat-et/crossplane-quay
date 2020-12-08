@@ -2,4 +2,4 @@ AWS_PROFILE=default && echo -e "[default]\naws_access_key_id = $(aws configure g
     
 oc create secret generic aws-creds -n crossplane-system --from-file=key=./creds.conf
 
-rm creds.conf
+oc create secret generic cluster-config -n crossplane-system --from-file=kubeconfig=./kubeconfig

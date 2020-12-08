@@ -29,6 +29,8 @@ spec:
       - fromFieldPath: spec.aZCIDRa
         toFieldPath: spec.forProvider.cidrBlock
       - fromFieldPath: spec.region
+        toFieldPath: spec.forProvider.region
+      - fromFieldPath: spec.region
         toFieldPath: spec.forProvider.availabilityZone
         transforms:
         - type: string
@@ -39,7 +41,7 @@ spec:
         transforms:
         - type: string
           string:
-            fmt: "%sc"
+            fmt: "%sa"
     - base:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: Subnet
@@ -57,6 +59,8 @@ spec:
       - fromFieldPath: spec.aZCIDRb
         toFieldPath: spec.forProvider.cidrBlock
       - fromFieldPath: spec.region
+        toFieldPath: spec.forProvider.region
+      - fromFieldPath: spec.region
         toFieldPath: spec.forProvider.availabilityZone
         transforms:
         - type: string
@@ -67,7 +71,7 @@ spec:
         transforms:
         - type: string
           string:
-            fmt: "%sc"
+            fmt: "%sb"
     - base:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: Subnet
@@ -84,6 +88,8 @@ spec:
         toFieldPath: spec.forProvider.vpcId 
       - fromFieldPath: spec.aZCIDRc
         toFieldPath: spec.forProvider.cidrBlock
+      - fromFieldPath: spec.region
+        toFieldPath: spec.forProvider.region
       - fromFieldPath: spec.region
         toFieldPath: spec.forProvider.availabilityZone
         transforms:
@@ -122,7 +128,9 @@ spec:
       - fromFieldPath: spec.vpcId
         toFieldPath: spec.forProvider.vpcId 
       - fromFieldPath: spec.igwId
-        toFieldPath: spec.routes[0].gatewayId
+        toFieldPath: spec.forProvider.routes[0].gatewayId
+      - fromFieldPath: spec.region
+        toFieldPath: spec.forProvider.region
       - fromFieldPath: spec.region
         toFieldPath: spec.forProvider.associations[0].subnetIdSelector.matchLabels.zone
         transforms:
@@ -183,3 +191,5 @@ spec:
       patches:
       - fromFieldPath: spec.vpcId
         toFieldPath: spec.forProvider.vpcId 
+      - fromFieldPath: spec.region
+        toFieldPath: spec.forProvider.region

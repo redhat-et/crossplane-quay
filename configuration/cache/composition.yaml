@@ -25,6 +25,9 @@ spec:
           providerConfigRef:
             name: aws-provider
           reclaimPolicy: Delete
+      patches:
+        - fromFieldPath: spec.region
+          toFieldPath: spec.forProvider.region
     - base:
         apiVersion: cache.aws.crossplane.io/v1beta1
         kind: ReplicationGroup
@@ -57,3 +60,5 @@ spec:
             - type: string
               string:
                 fmt: "%s-redis"
+        - fromFieldPath: spec.region
+          toFieldPath: spec.forProvider.region

@@ -29,6 +29,8 @@ spec:
               properties:
                 storageGB:
                   type: integer
+                region:
+                  type: string
               required:
-                - vpcId
                 - storageGB
+                - region

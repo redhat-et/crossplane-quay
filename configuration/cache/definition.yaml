@@ -22,3 +22,8 @@ spec:
           properties:
             spec:
               type: object
+              properties:
+                region:
+                  type: string
+              required:
+                - region

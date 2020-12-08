@@ -36,6 +36,9 @@ spec:
           providerConfigRef:
             name: aws-provider
           deletionPolicy: Delete
+          writeConnectionSecretToRef: 
+            namespace: crossplane-system
+            name: username-internal-secret
       patches:
         - fromFieldPath: spec.userName
           toFieldPath: metadata.name 
@@ -82,7 +85,7 @@ spec:
         - name: host
           fromConnectionSecretKey: endpoint
     - base:
-        apiVersion: s3.aws.crossplane.io/v1alpha1
+        apiVersion: s3.aws.crossplane.io/v1alpha2
         kind: BucketPolicy
         metadata:
           name: bucketPolicy
@@ -90,7 +93,7 @@ spec:
           forProvider:
             bucketNameSelector: 
               matchControllerRef: true
-            statement:
+            statements:
               - action:
                   - s3:ListBucket
                   - s3:GetBucketLocation
@@ -102,7 +105,7 @@ spec:
                     - iamUserArnSelector:
                         matchControllerRef: true
                 resource:
-                  - quay.demo.octo.redhat.com
+                  - bucketName
               - effect: Allow
                 action:
                   - s3:PutObject
@@ -112,12 +115,10 @@ spec:
                   - s3:AbortMultipartUpload
                 principal:
                   awsPrincipals:
-                    - iamUserArnSelector:
-                        matchControllerRef: true
+                    - iamUserArn: arn:aws:iam::991393792704:user/quaydemouser
                 resource:
-                  - quay.demo.octo.redhat.com
+                  - bucketName
             version: '2012-10-17'
-            name: aws-provider
           reclaimPolicy: Delete
           providerConfigRef:
             name: aws-provider
@@ -125,6 +126,16 @@ spec:
         - fromFieldPath: "spec.bucketName"
           toFieldPath: "metadata.name"
         - fromFieldPath: "spec.region"
-          toFieldPath: "spec.forProvider.statement[0].resource[0]"
-        - fromFieldPath: "spec.region"
-          toFieldPath: "spec.forProvider.statement[1].resource[0]"
+          toFieldPath: "spec.forProvider.region"
+        - fromFieldPath: "spec.bucketName"
+          toFieldPath: "spec.forProvider.statements[0].resource[0]"
+          transforms:
+            - type: string
+              string:
+                fmt: "arn:aws:s3:::%s"
+        - fromFieldPath: "spec.bucketName"
+          toFieldPath: "spec.forProvider.statements[1].resource[0]"
+          transforms:
+            - type: string
+              string:
+                fmt: "arn:aws:s3:::%s/*"

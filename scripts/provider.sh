@@ -20,4 +20,6 @@ echo "Provider is up"
 
 ./scripts/awscreds.sh
 
-oc apply -f ./helm/output/quay-cp/templates/aws_provider.yaml
+sleep 10
+
+oc apply -f ./manifests/providers.yaml

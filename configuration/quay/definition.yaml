@@ -1,0 +1,68 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: CompositeResourceDefinition
+metadata:
+  name: components.quay.example.org
+spec:
+  group: quay.example.org
+  names:
+    kind: Component
+    listKind: ComponentList
+    plural: components
+    singular: component
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                vpcId:
+                  type: string
+                igwId:
+                  type: string
+                aZCIDRa:
+                  type: string
+                aZCIDRb:
+                  type: string
+                aZCIDRc:
+                  type: string
+                region:
+                  type: string
+                storageGB:
+                  type: integer
+                bucketName:
+                  type: string
+                userName:
+                  type: string
+                namespace:
+                  type: string
+                redisSecret:
+                  type: string
+                dbSecret:
+                  type: string
+                bucketSecret:
+                  type: string
+                pullSecret:
+                  type: string
+                chartVersion:
+                  type: string
+              required:
+                - vpcId
+                - region
+                - aZCIDRa
+                - aZCIDRb
+                - aZCIDRc
+                - igwId
+                - storageGB
+                - namespace
+                - dbSecret
+                - redisSecret
+                - pullSecret
+                - bucketSecret
+                - bucketName
+                - userName
+                - chartVersion

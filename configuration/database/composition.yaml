@@ -24,6 +24,9 @@ spec:
           providerConfigRef:
             name: aws-provider
           reclaimPolicy: Delete
+      patches:
+        - fromFieldPath: spec.region
+          toFieldPath: spec.forProvider.region
     - base:
         apiVersion: database.aws.crossplane.io/v1beta1
         kind: RDSInstance
@@ -56,6 +59,8 @@ spec:
                 fmt: "%s-postgresql"
         - fromFieldPath: "spec.storageGB"
           toFieldPath: "spec.forProvider.allocatedStorage"
+        - fromFieldPath: spec.region
+          toFieldPath: spec.forProvider.region
       connectionDetails:
         - name: database-username
           fromConnectionSecretKey: username

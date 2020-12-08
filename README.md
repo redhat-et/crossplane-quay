@@ -26,7 +26,6 @@ You need the follow items setup prior to development
 
 To set up the project you need to run clone this [github repository](https://github.com/krishchow/crossplane-quay) and prepare the helm/values.yaml as described in [Prerequisites](##Prerequisites). After this you can run the following commands one by one.
 
-- `make build` - This will generate the CRs using HELM
 - `make crossplane` - This will install crossplane into the Kubernetes cluster in the `crossplane-system` namespace
 - `make provider` - This will install the AWS Provider into the `crossplane-system` namespace, but the CRs will be available in the entire cluster.
 

@@ -28,4 +28,8 @@ metadata:
   name: provider-in-cluster
 spec:
   credentials:
-    source: None
+    source: Secret
+    secretRef:
+      name: cluster-config
+      namespace: crossplane-system
+      key: kubeconfig

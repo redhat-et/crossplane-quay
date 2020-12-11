@@ -106,6 +106,8 @@ spec:
           name: my-project-quay
           namespace: default
         spec:
+          providerConfigRef:
+            name: provider-in-cluster
           forProvider:
             channel: stable
             operatorName: rh-quay-operator

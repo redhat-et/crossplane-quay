@@ -11,7 +11,7 @@ In this deployment, we will be creating the following resources in AWS:
 - ElastiCache Cluster - We create an elastic cluster with Redis to be used by Quay.
 - S3 Bucket - We will be creating an S3 Bucket along with the corresponding generated policy for that Bucket. S3 will form the actual registry backend for Quay.
 
-The S3 Bucket, RDS Instance and ElastiCache Cluster will all create secrets that are in turn consumed by the [Quay Operator](https://github.com/redhat-cop/quay-operator).
+The S3 Bucket, RDS Instance and ElastiCache Cluster will all create secrets that are in turn consumed by the [Quay Operator](https://github.com/redhat-cop/quay-operator). All of the compositions are combined in one Component compositiion, which will create the subresources. Additionally the component composition creates the Quay Operator itself, along with the Helm chart for configuring Quay.
 
 ## Prerequisites
 
@@ -22,12 +22,15 @@ You need the follow items setup prior to development
 - S3 Bucket Name - S3 Bucket names must be globally unique, you need to provide a name inside of the helm/values.yaml file.
 - VPC and Gateway ID - Both of this IDs need to also be provided in the helm/values.yaml file. These can be found on the AWS console.
 
+The credentials (kubeconfig, AWS) are both mounted using secrets,and these are passed into the respective ProviderConfigs. The S3 bucket name, VPC ID and Gateway ID are passed in using the [requirements.yaml](manifests/requirements.yaml) manifest.
+
 ## Setup
 
-To set up the project you need to run clone this [github repository](https://github.com/krishchow/crossplane-quay) and prepare the helm/values.yaml as described in [Prerequisites](##Prerequisites). After this you can run the following commands one by one.
+To set up the project you need to run clone this [github repository](https://github.com/redhat-et/crossplane-quay) and prepare the helm/values.yaml as described in [Prerequisites](##Prerequisites). After this you can run the following commands one by one.
 
 - `make crossplane` - This will install crossplane into the Kubernetes cluster in the `crossplane-system` namespace
-- `make provider` - This will install the AWS Provider into the `crossplane-system` namespace, but the CRs will be available in the entire cluster.
+- `make provider` - This will install the AWS, Helm and In Cluster Providers into the `crossplane-system` namespace, but the CRs will be available in the entire cluster.
+- `make catalog` - This will install the custom catalog source into your cluster, note that you may need to change the namespace based on your configuration.
 
 ### Verifying Status
 
@@ -49,7 +52,7 @@ If all three pods are up and running, then Crossplane and the AWS Provider are s
 
 ## Running Quay
 
-In order to get Quay up and running you will need to run `make quay`. This will create the compositions, requirements, and QuayEcosystem CR. You can validate this is working by looking at the AWS console where you will see that Redis, S3 and Postgres are being launched. If you do not see any of these, refer to [Known Issues](##Known-Issues).
+In order to get Quay up and running you will need to run `make quay`. This will create the compositions, requirements, Quay Operator, and eventually the QuayEcosystem CR. You can validate this is working by looking at the AWS console where you will see that Redis, S3 and Postgres are being launched. If you do not see any of these, refer to [Known Issues](##Known-Issues).
 
 Once all the dependencies have been created, the script will create the Quay Operator. After this point you can refer to the steps from the offical [Quay Operator docs](https://access.redhat.com/documentation/en-us/red_hat_quay/3.3/html/deploy_red_hat_quay_on_openshift_with_quay_operator/deploying_red_hat_quay#deploy_a_red_hat_quay_ecosystem).
 

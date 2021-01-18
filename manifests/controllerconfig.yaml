@@ -1,0 +1,50 @@
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: helm-config
+spec:
+  securityContext: {}
+  podSecurityContext: {}
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-helm
+spec:
+  package: crossplane/provider-helm:v0.5.0
+  controllerConfigRef:
+    name: helm-config
+---
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: aws-config
+spec:
+  securityContext: {}
+  podSecurityContext: {}
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-aws
+spec:
+  package: crossplane/provider-aws:master
+  controllerConfigRef:
+    name: aws-config
+---
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: in-cluster-config
+spec:
+  securityContext: {}
+  podSecurityContext: {}
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-in-cluster
+spec:
+  package: crossplane/provider-in-cluster:master
+  controllerConfigRef:
+    name: in-cluster-config

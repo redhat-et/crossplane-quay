@@ -1,4 +1,4 @@
-apiVersion: apiextensions.crossplane.io/v1alpha1
+apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
   name: components.quay.example.org
@@ -108,11 +108,16 @@ spec:
         spec:
           providerConfigRef:
             name: provider-in-cluster
-          forProvider:
-            channel: stable
-            operatorName: rh-quay-operator
-            catalogSource: krishchow-catalog-source
-            catalogSourceNamespace: openshift-marketplace
+          forProvider: {}
+      patches:
+        - fromFieldPath: spec.catalogSource
+          toFieldPath: spec.forProvider.catalogSource
+        - fromFieldPath: spec.operatorChannel
+          toFieldPath: spec.forProvider.channel
+        - fromFieldPath: spec.operatorName
+          toFieldPath: spec.forProvider.operatorName
+        - fromFieldPath: spec.catalogSourceNamespace
+          toFieldPath: spec.forProvider.catalogSourceNamespace
     - base:
         apiVersion: helm.crossplane.io/v1beta1
         kind: Release

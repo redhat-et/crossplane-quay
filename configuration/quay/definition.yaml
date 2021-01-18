@@ -1,4 +1,4 @@
-apiVersion: apiextensions.crossplane.io/v1alpha1
+apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
   name: components.quay.example.org
@@ -50,6 +50,14 @@ spec:
                   type: string
                 chartVersion:
                   type: string
+                operatorName:
+                  type: string
+                catalogSource:
+                  type: string
+                catalogSourceNamespace:
+                  type: string
+                operatorChannel:
+                  type: string
               required:
                 - vpcId
                 - region
@@ -66,3 +74,7 @@ spec:
                 - bucketName
                 - userName
                 - chartVersion
+                - operatorName
+                - catalogSource
+                - catalogSourceNamespace
+                - operatorChannel

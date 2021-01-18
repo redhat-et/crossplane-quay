@@ -6,6 +6,5 @@ metadata:
 spec:
   displayName: krishchow-catalog-source
   image: 'quay.io/krishchow/operator-registry:0.4'
-  imagePullPolicy: always
   publisher: krishchow
   sourceType: grpc

@@ -2,7 +2,7 @@
 
 ## Objective
 
-The goal of this project is to demonstrate what production-like deployment using the [Crossplane Operator](http://crossplane.io/) will look like. By utilizing the [AWS Provider](https://github.com/crossplane/provider-aws) we can create and configure managed resources on AWS, these can then be consumed by other services and deployments in our Openshift Cluster.
+The goal of this project is to demonstrate what production-like deployment using the [Crossplane Operator](http://crossplane.io/) will look like. By utilizing the [AWS Provider](https://github.com/crossplane/provider-aws) we can create and configure managed resources on AWS, these can then be consumed by other services and deployments in our Kubernetes Cluster.
 
 In this deployment, we will be creating the following resources in AWS:
 
@@ -17,16 +17,16 @@ The S3 Bucket, RDS Instance and ElastiCache Cluster will all create secrets that
 
 You need the follow items setup prior to development
 
-- KUBECONFIG - You need to have a valid KUBECONFIG environment variable, currently this needs to be an Openshift Cluster running on EC2.
+- KUBECONFIG - You need to have a valid KUBECONFIG environment variable, currently this needs to be an Kubernetes Cluster running on EC2.
 - AWS Credentials - You can find instructions [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) for setting up the standard AWS credentials for the aws-cli.
-- S3 Bucket Name - S3 Bucket names must be globally unique, you need to provide a name inside of the helm/values.yaml file.
-- VPC and Gateway ID - Both of this IDs need to also be provided in the helm/values.yaml file. These can be found on the AWS console.
+- S3 Bucket Name - S3 Bucket names must be globally unique, this name is provided inside of the requirements.yaml file.
+- VPC and Gateway ID - Both of this IDs need to also be provided in the requirements.yaml file. These can be found on the AWS console.
 
-The credentials (kubeconfig, AWS) are both mounted using secrets,and these are passed into the respective ProviderConfigs. The S3 bucket name, VPC ID and Gateway ID are passed in using the [requirements.yaml](manifests/requirements.yaml) manifest.
+The credentials (kubeconfig, AWS) are both mounted using secrets,and these are passed into the respective ProviderConfigs. The S3 bucket name, VPC ID and Gateway ID are passed in using the [manifests/requirements.yaml](manifests/requirements.yaml) manifest.
 
 ## Setup
 
-To set up the project you need to run clone this [github repository](https://github.com/redhat-et/crossplane-quay) and prepare the helm/values.yaml as described in [Prerequisites](##Prerequisites). After this you can run the following commands one by one.
+To set up the project you need to run clone this [github repository](https://github.com/redhat-et/crossplane-quay) and prepare the requirements.yaml as described in [Prerequisites](##Prerequisites). After this you can run the following commands one by one.
 
 - `make crossplane` - This will install crossplane into the Kubernetes cluster in the `crossplane-system` namespace
 - `make provider` - This will install the AWS, Helm and In Cluster Providers into the `crossplane-system` namespace, but the CRs will be available in the entire cluster.
@@ -38,10 +38,10 @@ Although the setup scripts will provide some output, for more detailed informati
 
 When `make provider` completes, you call the following commands, this will allow you to get check if the provider and operator pods are up.
 ```
-$ oc get provider.aws
+$ kubectl get provider.aws
 NAME           REGION      AGE
 aws-provider   us-east-2   XdXXh
-$ oc get pods -n crossplane-system
+$ kubectl get pods -n crossplane-system
 NAME                                          READY   STATUS      RESTARTS   AGE
 crossplane-xxxxxxxxx-xxxxx                    1/1     Running     0          XdXXh
 crossplane-package-manager-xxxxxxxxxx-xxxxx   1/1     Running     0          XdXXh
@@ -61,13 +61,13 @@ Once all the dependencies have been created, the script will create the Quay Ope
 Similar to the previous, ensure you have a second shell up before running `make quay`. The setup scripts will first create each of the compositions, these are the abstractions which wrap the cloud infrastructure resources. After this, each requirement will be created, and the script will block until they are finish. In your 2nd shell, you can validate this behaviour:
 
 ```
-$ oc get s3bucket
+$ kubectl get s3bucket
 NAME                     READY   SYNCED   PREDEFINED-ACL   LOCAL-PERMISSION   AGE
 s3buckettestquayredhat   True    True     private          ReadWrite          20s
-$ oc get rdsinstance
+$ kubectl get rdsinstance
 NAME                READY   SYNCED   STATE       ENGINE     VERSION   AGE
 my-db-x8jvx-glclx   False   False    creating    postgres   9.6       26s
-$ oc get replicationgroup
+$ kubectl get replicationgroup
 NAME                   READY   SYNCED   STATE      VERSION   AGE
 my-redis-m6lw6-zpk8v   False   True     creating   5.0.6     38s
 ```
@@ -77,13 +77,13 @@ Typically the S3 Bucket will finish completing first, followed by the Redis Clus
 Each resource will populate a secret in the target namespace, the contents of each secret contains the information necessary for the Quay Operator to connect and use the resource.
 
 ```
-$ oc get secrets -n $NAMESPACE
+$ kubectl get secrets -n $NAMESPACE
 bucket-conn           connection.crossplane.io/v1alpha1     3      XmXXs
 db-conn               connection.crossplane.io/v1alpha1     6      XmXXs
 redis-conn            connection.crossplane.io/v1alpha1     2      XmXXs
 ```
 
-At this point all the dependencies have been created, and the Makefile will begin to create the Quay Operator, and the `QuayEcosystem` resource. The Operator is typically created fairly quickly, it is easiest to validate from the Openshift interface.
+At this point all the dependencies have been created, and the Makefile will begin to create the Quay Operator, and the `QuayEcosystem` resource. The Operator is typically created fairly quickly, it is easiest to validate by checking the running pods or by using `kubectl get csv`.
 
 First the operator will come up, followed by the `quay-config` pod and then the `quay` pod.
 
@@ -105,7 +105,7 @@ When you are done with the quay instance, you need to delete the contents of the
 
 ## Known Issues
 
-Currently it seems like there is an issue with deploying the AWS provider. The deployment will fail to create any pods citing an invaldi fsGroup. The current fix for this requires editing the YAML for the deployment and removing the offending line (typically line 62) under the securityContext.fsGroup.
+Currently it seems like there is an issue with deploying the AWS provider. The deployment will fail to create any pods citing an invald fsGroup. The current fix for this requires editing the YAML for the deployment and removing the offending line (typically line 62) under the securityContext.fsGroup. This issue has only been seen for deployments running on Openshift.
 
 An issue has been opened on the upstream [provider-aws](https://github.com/crossplane/provider-aws/issues/316).
 

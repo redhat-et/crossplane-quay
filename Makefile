@@ -1,18 +1,24 @@
-quay:
-	oc apply -f manifests/requirements.yaml
-
 crossplane:
 	./scripts/crossplane.sh
 
 provider:
 	./scripts/provider.sh
 
-compositions:
-	./scripts/compositions.sh
+.PHONY: configuration
 
-clean:
-	oc delete -f manifests/requirements.yaml
+configuration:
+	./scripts/configuration.sh
 
 catalog:
-	oc apply -f manifests/catalog.yaml
-	oc apply -f manifests/quay-secret.yaml
+	kubectl create namespace olm || true
+	kubectl apply -f manifests/catalog.yaml
+	kubectl apply -f manifests/quay-secret.yaml
+
+quay:
+	oc apply -f manifests/requirements.yaml
+
+watch:
+	./scripts/watch.sh
+
+clean:
+	kubectl delete -f manifests/requirements.yaml

@@ -1,0 +1,2 @@
+TYPE NAME          READY
+kind metadata.name status.conditions[?(@.type=="Ready")].status

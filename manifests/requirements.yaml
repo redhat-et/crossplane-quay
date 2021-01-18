@@ -1,4 +1,3 @@
-# Source: quay-cp/templates/requirements.yaml
 apiVersion: quay.example.org/v1alpha1
 kind: Component
 metadata:
@@ -10,16 +9,19 @@ spec:
   namespace: default
   aZCIDRa: 10.0.99.0/24
   aZCIDRb: 10.0.100.0/24
-  aZCIDRc: 10.0.101.0- VPC and Gateway ID - Both of this IDs need to also be provided in the helm/values.yaml file. These can be found on the AWS console.
-/24
-  vpcId: vpc-0837bd0bcf10c04cb
-  igwId: igw-057e77864fe7a5fd8
+  aZCIDRc: 10.0.101.0/24
+  vpcId: vpc-0e65f3a31846ae8ae
+  igwId: igw-064187b156862d416
   dbSecret: db-conn
   redisSecret: redis-conn
   bucketSecret: bucket-conn
   bucketName: quaydemooctoredhat
   userName: quaydemouser
   pullSecret: redhat-quay-pull-secret
+  operatorChannel: stable
+  operatorName: rh-quay-operator
+  catalogSource: krishchow-catalog-source
+  catalogSourceNamespace: openshift-marketplace
   chartVersion: 0.1.6
   compositionSelector:
     matchLabels:

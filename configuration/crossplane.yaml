@@ -1,7 +1,7 @@
-apiVersion: meta.pkg.crossplane.io/v1alpha1
+apiVersion: meta.pkg.crossplane.io/v1
 kind: Configuration
 metadata:
   name: quay-dependencies
 spec:
   crossplane:
-    version: ">=v0.14.0-0"
+    version: ">=v1.0.0"

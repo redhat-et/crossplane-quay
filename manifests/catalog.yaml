@@ -1,0 +1,10 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: krishchow-catalog-source
+  namespace: openshift-marketplace
+spec:
+  displayName: krishchow-catalog-source
+  image: 'quay.io/krishchow/operator-registry:0.4'
+  publisher: krishchow
+  sourceType: grpc

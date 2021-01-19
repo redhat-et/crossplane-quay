@@ -1,0 +1,28 @@
+apiVersion: quay.example.org/v1alpha1
+kind: Component
+metadata:
+  name: my-quay
+  namespace: "default"
+spec:
+  region: us-east-2
+  storageGB: 10
+  namespace: default
+  aZCIDRa: 10.0.99.0/24
+  aZCIDRb: 10.0.100.0/24
+  aZCIDRc: 10.0.101.0/24
+  vpcId: vpc-0e65f3a31846ae8ae
+  igwId: igw-064187b156862d416
+  dbSecret: db-conn
+  redisSecret: redis-conn
+  bucketSecret: bucket-conn
+  bucketName: quaydemooctoredhat
+  userName: quaydemouser
+  pullSecret: redhat-quay-pull-secret
+  operatorChannel: stable
+  operatorName: rh-quay-operator
+  catalogSource: krishchow-catalog-source
+  catalogSourceNamespace: openshift-marketplace
+  chartVersion: 0.1.6
+  compositionSelector:
+    matchLabels:
+      provider: aws

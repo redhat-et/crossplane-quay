@@ -1,43 +1,24 @@
-all: build crossplane provider quay
-
-build:
-	cd helm; helm template . --output-dir output
-
-quay: dependencies prepquay
-	oc apply -f helm/output/quay-cp/templates/quay.yaml
-
-prepquay:
-	./quay/setup_quay.sh
-
 crossplane:
 	./scripts/crossplane.sh
 
 provider:
 	./scripts/provider.sh
 
-compositions: build
-	./scripts/compositions.sh
+.PHONY: configuration
 
-dependencies: compositions
-	./make_dependencies.sh
+configuration:
+	./scripts/configuration.sh
 
-clean-compositions:
-	oc delete -f helm/output/quay-cp/templates/compositions
+catalog:
+	kubectl create namespace olm || true
+	kubectl apply -f manifests/catalog.yaml
+	kubectl apply -f manifests/quay-secret.yaml
 
-clean-dependencies:
-	oc delete -f helm/output/quay-cp/templates/network_requirement.yaml
-	oc delete -f helm/output/quay-cp/templates/requirements.yaml
+quay:
+	oc apply -f manifests/requirements.yaml
 
-clean-quay:
-	oc delete -f helm/output/quay-cp/templates/quay.yaml
-	./quay/teardown_quay.sh
+watch:
+	./scripts/watch.sh
 
-clean: clean-quay clean-dependencies
-
-clean-crossplane:
-	./force_clean.sh
-
-clean-all:
-	oc delete -f helm/output/quay-cp/templates/quay.yaml
-	./quay/teardown_quay.sh
-	./force_clean.sh
+clean:
+	kubectl delete -f manifests/requirements.yaml

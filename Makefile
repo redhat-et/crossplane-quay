@@ -15,10 +15,12 @@ catalog:
 	kubectl apply -f manifests/quay-secret.yaml
 
 quay:
-	oc apply -f manifests/requirements.yaml
+	kubectl apply -f manifests/operatorgroup.yaml
+	kubectl apply -f manifests/requirements.yaml
 
 watch:
 	./scripts/watch.sh
 
 clean:
 	kubectl delete -f manifests/requirements.yaml
+	kubectl delete -f manifests/operatorgroup.yaml

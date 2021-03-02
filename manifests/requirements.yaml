@@ -10,8 +10,8 @@ spec:
   aZCIDRa: 10.0.99.0/24
   aZCIDRb: 10.0.100.0/24
   aZCIDRc: 10.0.101.0/24
-  vpcId: vpc-0e65f3a31846ae8ae
-  igwId: igw-064187b156862d416
+  vpcId: vpc-0f88fd12cb01b3e2b
+  igwId: igw-0ed5a5940fb796658
   dbSecret: db-conn
   redisSecret: redis-conn
   bucketSecret: bucket-conn
@@ -22,7 +22,7 @@ spec:
   operatorName: rh-quay-operator
   catalogSource: krishchow-catalog-source
   catalogSourceNamespace: openshift-marketplace
-  chartVersion: 0.1.6
+  chartVersion: 0.1.7
   compositionSelector:
     matchLabels:
       provider: aws

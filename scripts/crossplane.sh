@@ -2,7 +2,7 @@
 
 source variables.env
 
-oc create namespace crossplane-system
+kubectl create namespace crossplane-system
 
 helm repo add crossplane-stable https://charts.crossplane.io/stable
 helm repo update

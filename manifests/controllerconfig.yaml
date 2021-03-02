@@ -28,7 +28,7 @@ kind: Provider
 metadata:
   name: provider-aws
 spec:
-  package: crossplane/provider-aws:master
+  package: crossplane/provider-aws:v0.16.0
   controllerConfigRef:
     name: aws-config
 ---
@@ -45,6 +45,6 @@ kind: Provider
 metadata:
   name: provider-in-cluster
 spec:
-  package: crossplane/provider-in-cluster:master
+  package: crossplane/provider-in-cluster:v0.0.0-33.gfa3a5c0
   controllerConfigRef:
     name: in-cluster-config

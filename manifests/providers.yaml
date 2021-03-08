@@ -1,35 +1,50 @@
-apiVersion: aws.crossplane.io/v1beta1
-kind: ProviderConfig
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
 metadata:
-  name: aws-provider
+  name: helm-config
 spec:
-  credentials:
-    source: Secret
-    secretRef:
-      namespace: crossplane-system
-      name: aws-creds
-      key: key
+  securityContext: {}
+  podSecurityContext: {}
 ---
-apiVersion: helm.crossplane.io/v1beta1
-kind: ProviderConfig
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
 metadata:
-  name: helm-provider
+  name: provider-helm
 spec:
-  credentials:
-    source: Secret
-    secretRef:
-      name: cluster-config
-      namespace: crossplane-system
-      key: kubeconfig
+  package: crossplane/provider-helm:v0.5.0
+  controllerConfigRef:
+    name: helm-config
 ---
-apiVersion: in-cluster.crossplane.io/v1beta1
-kind: ProviderConfig
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: aws-config
+spec:
+  securityContext: {}
+  podSecurityContext: {}
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-aws
+spec:
+  package: crossplane/provider-aws:v0.16.0
+  controllerConfigRef:
+    name: aws-config
+---
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: in-cluster-config
+spec:
+  securityContext: {}
+  podSecurityContext: {}
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
 metadata:
   name: provider-in-cluster
 spec:
-  credentials:
-    source: Secret
-    secretRef:
-      name: cluster-config
-      namespace: crossplane-system
-      key: kubeconfig
+  package: crossplane/provider-in-cluster:v0.1.1
+  controllerConfigRef:
+    name: in-cluster-config

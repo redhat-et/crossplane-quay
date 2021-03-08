@@ -1,7 +1,7 @@
 #!/bin/bash
 source variables.env
 
-kubectl apply -f ./manifests/controllerconfig.yaml
+kubectl apply -f ./manifests/providers.yaml
 
 ./scripts/awscreds.sh
 
@@ -20,4 +20,4 @@ do
   sleep 2
 done
 
-kubectl apply -f ./manifests/providers.yaml
+kubectl apply -f ./manifests/providerconfigs.yaml
